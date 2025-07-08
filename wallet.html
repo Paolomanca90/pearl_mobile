@@ -1,0 +1,1759 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Currency Wallet</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .wallet-type {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .total-assets {
+            text-align: center;
+            padding: 30px 20px;
+            background: #f8f9fa;
+        }
+
+        .total-amount {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .total-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .accounts-list {
+            padding: 0 20px;
+        }
+
+        .account-item {
+            display: flex;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .account-item:hover {
+            background: #f8f9fa;
+        }
+
+        .account-item.active {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding-left: 16px;
+        }
+
+        .crypto-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .crypto-icon.btc { background: #f7931a; }
+        .crypto-icon.sol { background: #9945ff; }
+        .crypto-icon.eth { background: #627eea; }
+        .crypto-icon.bnb { background: #f3ba2f; }
+        .crypto-icon.avax { background: #e84142; }
+
+        .account-info {
+            flex: 1;
+        }
+
+        .account-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .account-balance {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tokens-count {
+            color: #9c27b0;
+            font-size: 12px;
+            margin-top: 2px;
+            cursor: pointer;
+        }
+
+        .tokens-count:hover {
+            text-decoration: underline;
+        }
+
+        .expand-arrow {
+            margin-left: auto;
+            font-size: 12px;
+            color: #666;
+            transition: transform 0.3s ease;
+            transform-origin: center;
+        }
+
+        .expand-arrow.expanded {
+            transform: rotate(90deg);
+        }
+
+        .tokens-list {
+            background: #f8f9fa;
+            border-left: 2px solid #9c27b0;
+            margin-left: 20px;
+            display: none;
+        }
+
+        .tokens-list.expanded {
+            display: block;
+        }
+
+        .token-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .token-item:hover {
+            background: #f0f0f0;
+        }
+
+        .token-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .token-icon.weth { background: #627eea; }
+        .token-icon.steth { background: #00d4aa; }
+
+        .nft-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .nft-item:hover {
+            background: #f0f0f0;
+        }
+
+        .nft-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            margin-right: 10px;
+            background: #ff6b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .token-info {
+            flex: 1;
+        }
+
+        .token-name {
+            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .token-balance {
+            color: #666;
+            font-size: 12px;
+        }
+
+        .detail-view {
+            display: none;
+            background: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .detail-header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .back-btn {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 20;
+            padding: 10px;
+            min-width: 40px;
+            min-height: 40px;
+        }
+
+        .detail-crypto-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .detail-balance {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        .detail-usd {
+            color: #ccc;
+            font-size: 16px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+        }
+
+        .action-btn {
+            background: #9c27b0;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            min-width: 80px;
+            transition: background 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #7b1fa2;
+        }
+
+        .action-btn.swap {
+            background: #e91e63;
+        }
+
+        .action-btn.swap:hover {
+            background: #c2185b;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin: 0 20px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: #333;
+            border-bottom-color: #9c27b0;
+        }
+
+        .transactions {
+            padding: 20px;
+        }
+
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .transaction-date {
+            color: #9c27b0;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .transaction-icon.confirmed {
+            background: #e8f5e8;
+            color: #4caf50;
+        }
+
+        .transaction-icon.pending {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .transaction-details {
+            flex: 1;
+        }
+
+        .transaction-hash {
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 4px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .transaction-status {
+            font-size: 12px;
+            color: #4caf50;
+        }
+
+        .transaction-amount {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .transaction-amount.positive {
+            color: #4caf50;
+        }
+
+        .transaction-amount.negative {
+            color: #f44336;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            max-width: 350px;
+            width: 90%;
+            margin: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #9c27b0;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #9c27b0;
+        }
+
+        .amount-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .amount-row .form-input {
+            flex: 1;
+        }
+
+        .max-btn {
+            background: #e3f2fd;
+            color: #2196f3;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #9c27b0;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #7b1fa2;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .qr-code {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .qr-placeholder {
+            width: 150px;
+            height: 150px;
+            background: #f0f0f0;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .address-display {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            margin: 10px 0;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .copy-btn {
+            background: #9c27b0;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 10px;
+            word-break: keep-all;
+        }
+
+        .terms-link {
+            color: #9c27b0;
+            text-decoration: underline;
+        }
+
+        .info-text {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+
+        /* NFT Detail View Styles */
+        .nft-detail-view {
+            display: none;
+            background: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .nft-detail-header {
+            background: #333;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nft-collection-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .nft-collection-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            border-radius: 4px;
+            background: #ff6b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+
+        .nft-title {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .nft-collection {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .nft-quantity {
+            font-size: 16px;
+            margin-top: 5px;
+        }
+
+        .nft-image-container {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .nft-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 12px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .nft-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .nft-action-btn {
+            background: #9c27b0;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .nft-action-btn:hover {
+            background: #7b1fa2;
+        }
+
+        .nft-transactions {
+            padding: 20px;
+        }
+
+        .nft-transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nft-transaction-details {
+            flex: 1;
+        }
+
+        .nft-transaction-type {
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .nft-transaction-hash {
+            font-size: 12px;
+            color: #666;
+            font-family: monospace;
+            word-break: break-all;
+        }
+
+        .nft-transaction-status {
+            font-size: 12px;
+            color: #4caf50;
+            margin-top: 4px;
+        }
+
+        .nft-transaction-amount {
+            text-align: right;
+            font-weight: 600;
+            color: #4caf50;
+        }
+
+        .refresh-btn {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 20;
+            padding: 10px;
+            min-width: 40px;
+            min-height: 40px;
+        }
+
+        .info-btn {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            z-index: 20;
+            padding: 10px;
+            min-width: 40px;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Main View -->
+        <div id="mainView">
+            <div class="header">
+                <a href="./index.html" style="display: block; text-align: start; color: white;">
+                    <i class="fa fa-arrow-left"></i>
+                </a>
+                <h1>Multi Currency Wallet</h1>
+                <div class="wallet-type">Pearl wallet</div>
+            </div>
+
+            <div class="total-assets">
+                <div class="total-amount">215.35 USD</div>
+                <div class="total-label">Total assets</div>
+            </div>
+
+            <div class="accounts-list">
+                <div class="account-item" data-crypto="btc" data-account="1">
+                    <div class="crypto-icon btc">₿</div>
+                    <div class="account-info">
+                        <div class="account-name">Account 1</div>
+                        <div class="account-balance">1.65 mBTC</div>
+                    </div>
+                </div>
+
+                <div class="account-item" data-crypto="btc" data-account="2">
+                    <div class="crypto-icon btc">₿</div>
+                    <div class="account-info">
+                        <div class="account-name">Account 2</div>
+                        <div class="account-balance">48.58 μBTC</div>
+                    </div>
+                </div>
+
+                <div class="account-item" data-crypto="sol" data-account="1">
+                    <div class="crypto-icon sol">◎</div>
+                    <div class="account-info">
+                        <div class="account-name">Account 1</div>
+                        <div class="account-balance">14.51 mSOL</div>
+                    </div>
+                </div>
+
+                <div class="account-item" data-crypto="sol" data-account="2">
+                    <div class="crypto-icon sol">◎</div>
+                    <div class="account-info">
+                        <div class="account-name">Account 2</div>
+                        <div class="account-balance">0.00 SOL</div>
+                    </div>
+                </div>
+
+                <div class="account-item" data-crypto="eth" data-account="1">
+                    <div class="crypto-icon eth">Ξ</div>
+                    <div class="account-info">
+                        <div class="account-name">Account 1</div>
+                        <div class="account-balance">16.91 mETH</div>
+                        <div class="tokens-count" onclick="toggleTokens('eth-1', event)">2 tokens</div>
+                    </div>
+                    <div class="expand-arrow" id="arrow-eth-1">▶</div>
+                </div>
+
+                <div class="tokens-list" id="tokens-eth-1">
+                    <div class="token-item" data-type="token" data-token="weth" data-account="eth-1">
+                        <div class="token-icon weth">Ξ</div>
+                        <div class="token-info">
+                            <div class="token-name">Wrapped Ether</div>
+                            <div class="token-balance">10.00 mWETH</div>
+                        </div>
+                    </div>
+                    <div class="token-item" data-type="token" data-token="steth" data-account="eth-1">
+                        <div class="token-icon steth">Ξ</div>
+                        <div class="token-info">
+                            <div class="token-name">stETH</div>
+                            <div class="token-balance">2.06 mstETH</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-item" data-crypto="eth" data-account="2">
+                    <div class="crypto-icon eth">Ξ</div>
+                    <div class="account-info">
+                        <div class="account-name">Account 2</div>
+                        <div class="account-balance">0.00 ETH</div>
+                        <div class="tokens-count" onclick="toggleTokens('eth-2', event)">1 NFT</div>
+                    </div>
+                    <div class="expand-arrow" id="arrow-eth-2">▶</div>
+                </div>
+
+                <div class="tokens-list" id="tokens-eth-2">
+                    <div class="nft-item" data-type="nft" data-nft="big-hugs" data-account="eth-2">
+                        <div class="nft-icon">🤗</div>
+                        <div class="token-info">
+                            <div class="token-name">Big Hugs</div>
+                            <div class="token-balance">Quantity: x1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="account-item" data-crypto="bnb" data-account="1">
+                    <div class="crypto-icon bnb">B</div>
+                    <div class="account-info">
+                        <div class="account-name">Account 1</div>
+                        <div class="account-balance">9.98 mBNB</div>
+                    </div>
+                </div>
+
+                <div class="account-item" data-crypto="avax" data-account="1">
+                    <div class="crypto-icon avax">A</div>
+                    <div class="account-info">
+                        <div class="account-name">Account 1</div>
+                        <div class="account-balance">8.26 μAVAX</div>
+                    </div>
+                </div>
+
+                <div class="account-item" data-crypto="avax" data-account="2">
+                    <div class="crypto-icon avax">A</div>
+                    <div class="account-info">
+                        <div class="account-name">Account 2</div>
+                        <div class="account-balance">0.13 AVAX</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail View -->
+        <div id="detailView" class="detail-view">
+            <div class="detail-header">
+                <button class="back-btn" onclick="closeDetail()">←</button>
+                <div class="detail-crypto-icon btc" id="detailIcon">₿</div>
+                <span id="detailAccountName">Account 1</span>
+                <div class="detail-balance" id="detailBalance">1.65 mBTC (165.44 USD)</div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="action-btn" onclick="openSendModal()">Send SOL</button>
+                <button class="action-btn" onclick="openReceiveModal()">Receive SOL</button>
+                <button class="action-btn swap" onclick="openSwapModal()">Swap SOL</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('transactions')">Transactions history</button>
+                <button class="tab" onclick="switchTab('swaps')">Swaps history</button>
+            </div>
+
+            <div class="transactions" id="transactionsContent">
+                <div class="transaction-date">Wednesday, May 7, 2025 - 6:29 PM</div>
+                <div class="transaction-item">
+                    <div class="transaction-icon confirmed">✓</div>
+                    <div class="transaction-details">
+                        <div class="transaction-hash">0g8490cdb6f9df7g3cc640bqb26350a7ce7d196fb58318fd1496bbe8e75750c67</div>
+                        <div class="transaction-status">confirmed</div>
+                    </div>
+                    <div class="transaction-amount positive">+1.25m</div>
+                </div>
+
+                <div class="transaction-date">Saturday, April 6, 2024 - 9:56 PM</div>
+                <div class="transaction-item">
+                    <div class="transaction-icon confirmed">✓</div>
+                    <div class="transaction-details">
+                        <div class="transaction-hash">0x663e3204f6b89420e1d3a365f6d3daf059fee82fe87792c82a7c2d539b51e</div>
+                        <div class="transaction-status">confirmed</div>
+                    </div>
+                    <div class="transaction-amount positive">+10.00m</div>
+                </div>
+            </div>
+
+            <div class="transactions" id="swapsContent" style="display: none;">
+                <div class="transaction-date">Tuesday, May 6, 2025 - 6:56 PM</div>
+                <div class="transaction-item">
+                    <div class="transaction-icon confirmed">⇄</div>
+                    <div class="transaction-details">
+                        <div class="transaction-hash">sent: 3.71 mBNB → received: 13.54 mSOL</div>
+                        <div class="transaction-status">completed</div>
+                    </div>
+                </div>
+
+                <div class="transaction-date">Tuesday, May 6, 2025 - 10:11 AM</div>
+                <div class="transaction-item">
+                    <div class="transaction-icon pending">⏳</div>
+                    <div class="transaction-details">
+                        <div class="transaction-hash">sent: 0.30 AVAX → received: 38.57 mSOL</div>
+                        <div class="transaction-status">pending</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NFT Detail View -->
+        <div id="nftDetailView" class="nft-detail-view">
+            <div class="nft-detail-header">
+                <button class="back-btn" onclick="closeNftDetail()">←</button>
+                <button class="refresh-btn" onclick="refreshNft()">↻</button>
+                <button class="info-btn" onclick="showNftInfo()">ⓘ</button>
+                <div class="nft-collection-info">
+                    <div class="nft-collection-icon" id="nftCollectionIcon">🤗</div>
+                    <span id="nftTitle">Big Hugs</span>
+                </div>
+                <div class="nft-collection" id="nftCollection">Collection: Big Hugs</div>
+                <div class="nft-quantity" id="nftQuantity">Quantity: x1</div>
+            </div>
+
+            <div class="nft-image-container">
+                <div class="nft-image" id="nftImage">🤗</div>
+            </div>
+
+            <div class="nft-actions">
+                <button class="nft-action-btn" onclick="sendNft()">Send</button>
+                <button class="nft-action-btn" onclick="receiveNft()">Receive</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab active" onclick="switchNftTab('transactions')">Transactions history</button>
+                <button class="tab" onclick="switchNftTab('swaps')">Swaps history</button>
+            </div>
+
+            <div class="nft-transactions" id="nftTransactionsContent">
+                <div class="transaction-date">Sunday, April 14, 2024 - 4:45 PM</div>
+                <div class="nft-transaction-item">
+                    <div class="transaction-icon confirmed">✓</div>
+                    <div class="nft-transaction-details">
+                        <div class="nft-transaction-status">confirmed</div>
+                    </div>
+                    <div class="nft-transaction-amount">+1</div>
+                </div>
+            </div>
+
+            <div class="nft-transactions" id="nftSwapsContent" style="display: none;">
+                <div class="info-text">No swap history available for this NFT.</div>
+            </div>
+        </div>
+
+        <!-- Send Modal -->
+        <div id="sendModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeSendModal()">×</button>
+                <div class="modal-title">Send coins</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Recipient address</label>
+                    <input type="text" class="form-input" id="recipientAddress" 
+                           placeholder="bc1q6l4g8lltqq5l0yr2v8pkuljycnkfv5fvqfpf">
+                </div>
+
+                <div class="form-group">
+                    <div class="amount-row">
+                        <div>
+                            <label class="form-label">Amount (SOL)</label>
+                            <input type="number" class="form-input" id="sendAmountSOL" 
+                                   placeholder="0.00" step="0.001">
+                        </div>
+                        <button class="max-btn" onclick="setMaxAmount()">Max</button>
+                        <div>
+                            <label class="form-label">Amount (USD)</label>
+                            <input type="number" class="form-input" id="sendAmountUSD" 
+                                   placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Your password</label>
+                    <input type="password" class="form-input" id="sendPassword">
+                </div>
+
+                <button class="submit-btn" onclick="executeSend()">Send SOL</button>
+            </div>
+        </div>
+
+        <!-- Receive Modal -->
+        <div id="receiveModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeReceiveModal()">×</button>
+                <div class="modal-title">Receive coins</div>
+                
+                <div class="form-group">
+                    <label class="form-label">My address</label>
+                    <div class="address-display">
+                        5oGXU7haMdt7mVMF2KQd2GePM5pzZP2cBCWeKpp58dS
+                        <button class="copy-btn" onclick="copyAddress()">Copy</button>
+                    </div>
+                </div>
+
+                <div class="qr-code">
+                    <div class="qr-placeholder">QR Code</div>
+                </div>
+
+                <div class="form-group">
+                    <div class="address-display" style="font-size: 10px;">
+                        solana:5oGXU7haMdt7mVMF2KQd2GePM5pzZP2cBCWeKpp58dS
+                        <button class="copy-btn" onclick="copyFullAddress()">Copy</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="amount-row">
+                        <div>
+                            <label class="form-label">Amount (SOL)</label>
+                            <input type="number" class="form-input" placeholder="0.00" step="0.001">
+                        </div>
+                        <div>
+                            <label class="form-label">Amount (USD)</label>
+                            <input type="number" class="form-input" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Swap Modal -->
+        <div id="swapModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeSwapModal()">×</button>
+                <div class="modal-title">⇄ Swap</div>
+                
+                <div class="info-text">
+                    Swap Solana with other currency.<br>
+                    Experience a seamless, decentralized swap. Instantly see the exact amount you'll receive.
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Enter password</label>
+                    <input type="password" class="form-input" id="swapPassword">
+                </div>
+
+                <div class="info-text">
+                    By clicking Continue, you agree to our <a href="#" class="terms-link">Swap Terms of Service</a>.
+                </div>
+
+                <button class="submit-btn" onclick="continueSwap()">Continue</button>
+
+                <div class="info-text">
+                    ⓘ Unsure how the swap works? <a href="#" class="terms-link">Consult our tutorial first</a>.
+                </div>
+            </div>
+        </div>
+
+        <!-- Send NFT Modal -->
+        <div id="sendNftModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeSendNftModal()">×</button>
+                <div class="modal-title">Send Big Hugs</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Recipient address</label>
+                    <input type="text" class="form-input" id="nftRecipientAddress" 
+                           placeholder="bc1q8f4g0ltqq5l0yr2v8pkuljycnkfv5fvqfpf">
+                </div>
+
+                <div class="form-group">
+                    <div class="amount-row">
+                        <div style="flex: 1;">
+                            <label class="form-label">Quantity</label>
+                            <input type="number" class="form-input" id="nftQuantity" 
+                                   value="1" min="1" max="1">
+                        </div>
+                        <button class="max-btn" onclick="setMaxNftQuantity()">Max</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Your password</label>
+                    <input type="password" class="form-input" id="nftSendPassword">
+                </div>
+
+                <button class="submit-btn" onclick="executeSendNft()">Send NFT</button>
+            </div>
+        </div>
+
+        <!-- Receive NFT Modal -->
+        <div id="receiveNftModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeReceiveNftModal()">×</button>
+                <div class="modal-title">Receive coins</div>
+                
+                <div class="form-group">
+                    <label class="form-label">My address</label>
+                    <div class="address-display">
+                        0xc14F824860a2A6Dae183e1761a408C7C4f8582c9
+                        <button class="copy-btn" onclick="copyNftAddress()">Copy</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Contract address</label>
+                    <div class="info-text" style="color: #9c27b0; font-size: 12px; margin-bottom: 5px;">0x44d19b72d0767451e758a270a0aaaadd3e36d4c</div>
+                    <label class="form-label">Token ID</label>
+                    <div class="info-text" style="color: #9c27b0; font-size: 12px;">2546</div>
+                </div>
+
+                <div class="qr-code">
+                    <div style="width: 150px; height: 150px; margin: 0 auto; background: white; border: 1px solid #ddd; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        <div style="width: 120px; height: 120px; background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='); background-size: cover; border: 2px solid #000; display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); gap: 1px;">
+                            <div style="background: #000;"></div>
+                            <div style="background: #fff;"></div>
+                            <div style="background: #000;"></div>
+                            <div style="background: #000;"></div>
+                            <div style="background: #fff;"></div>
+                            <div style="background: #000;"></div>
+                            <div style="background: #fff;"></div>
+                            <div style="background: #000;"></div>
+                            <div style="background: #fff;"></div>
+                            <div style="background: #000;"></div>
+                            <div style="background: #fff;"></div>
+                            <div style="background: #000;"></div>
+                            <div style="background: #000;"></div>
+                            <div style="background: #fff;"></div>
+                            <div style="background: #000;"></div>
+                            <div style="background: #fff;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="address-display" style="font-size: 10px; color: #9c27b0;">
+                        0xc14F824860a2A6Dae183e1761a408C7C4f8582c9
+                        <button class="copy-btn" onclick="copyNftFullAddress()">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="swapDetailsModal" class="modal">
+            <div class="modal-content">
+                <button class="close-btn" onclick="closeSwapDetailsModal()">×</button>
+                <div class="modal-title">⇄ Swap</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Destination Wallet</label>
+                    <div class="dropdown">
+                        <select class="form-input">
+                            <option>Account 1 (Bitcoin, 0.00144934 BTC)</option>
+                            <option>Account 2 (Bitcoin, 0.00048 BTC)</option>
+                            <option>Account 1 (Ethereum, 0.01691 ETH)</option>
+                        </select>
+                    </div>
+                    <div class="info-text">
+                        Select a destination wallet. The currency you receive will depend on your selection.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="amount-row">
+                        <div>
+                            <label class="form-label">Amount (SOL)</label>
+                            <input type="number" class="form-input" placeholder="0.00" step="0.001">
+                        </div>
+                        <button class="max-btn">Max</button>
+                        <div>
+                            <label class="form-label">Amount (USD)</label>
+                            <input type="number" class="form-input" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="submit-btn" onclick="getQuote()">Get quote</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentCrypto = '';
+        let currentAccount = '';
+        let currentToken = '';
+        let currentNft = '';
+
+        // Account data
+        const accountData = {
+            'btc-1': { balance: '1.65 mBTC', usd: '165.44 USD', address: 'bc1q6l4g8lltqq5l0yr2v8pkuljycnkfv5fvqfpf' },
+            'btc-2': { balance: '48.58 μBTC', usd: '48.58 USD', address: 'bc1q7h9m5k2pqx8n3r6t4y9w2e5u8i1o4p7s0a6d9f2' },
+            'sol-1': { balance: '14.51 mSOL', usd: '2.13 USD', address: '5oGXU7haMdt7mVMF2KQd2GePM5pzZP2cBCWeKpp58dS' },
+            'sol-2': { balance: '0.00 SOL', usd: '0.00 USD', address: '7pHXV8jaPqt9mWKF3LRd4GeQM6qzZQ3cCDWeXpp59eT' },
+            'eth-1': { balance: '16.91 mETH', usd: '42.30 USD', address: '0x742d35Cc6634C0532925a3b8d0521...5f7cbC4' },
+            'eth-2': { balance: '0.00 ETH', usd: '0.00 USD', address: '0x8f5c7D9E6b4a1c2f8e0b9d3a5c7e2f4b6d8a0c2e4' },
+            'bnb-1': { balance: '9.98 mBNB', usd: '5.99 USD', address: 'bnb1z8x7v6c5n4m3b2a1s9d8f7g6h5j4k3l2p0o9i8u7' },
+            'avax-1': { balance: '8.26 μAVAX', usd: '0.83 USD', address: 'X-avax1y8x7v6c5n4m3b2a1s9d8f7g6h5j4k3l2p0o9i8u7' },
+            'avax-2': { balance: '0.13 AVAX', usd: '1.30 USD', address: 'X-avax1z9y8x7v6c5n4m3b2a1s9d8f7g6h5j4k3l2p0o9i8' }
+        };
+
+        // Token data
+        const tokenData = {
+            'weth': { name: 'Wrapped Ether', balance: '10.00 mWETH', usd: '25.30 USD', address: '0x742d35Cc6634C0532925a3b8d0521...5f7cbC4' },
+            'steth': { name: 'stETH', balance: '2.06 mstETH', usd: '5.21 USD', address: '0x742d35Cc6634C0532925a3b8d0521...5f7cbC4' }
+        };
+
+        // NFT data
+        const nftData = {
+            'big-hugs': { 
+                name: 'Big Hugs', 
+                collection: 'Big Hugs', 
+                quantity: 'x1',
+                icon: '🤗',
+                address: '0x742d35Cc6634C0532925a3b8d0521...5f7cbC4'
+            }
+        };
+
+        const cryptoIcons = {
+            'btc': '₿',
+            'sol': '◎',
+            'eth': 'Ξ',
+            'bnb': 'B',
+            'avax': 'A'
+        };
+
+        const cryptoNames = {
+            'btc': 'Bitcoin',
+            'sol': 'Solana',
+            'eth': 'Ethereum',
+            'bnb': 'BNB',
+            'avax': 'Avalanche'
+        };
+
+        // Account selection
+        document.querySelectorAll('.account-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // Prevent opening detail if clicking on tokens count
+                if (e.target.classList.contains('tokens-count') || e.target.classList.contains('expand-arrow')) {
+                    return;
+                }
+                
+                const crypto = this.dataset.crypto;
+                const account = this.dataset.account;
+                openAccountDetail(crypto, account);
+            });
+        });
+
+        // Token selection
+        document.querySelectorAll('.token-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const type = this.dataset.type;
+                const token = this.dataset.token;
+                const nft = this.dataset.nft;
+                
+                if (type === 'token') {
+                    openTokenDetail(token);
+                } else if (type === 'nft') {
+                    openNftDetail(nft);
+                }
+            });
+        });
+
+        // NFT selection
+        document.querySelectorAll('.nft-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const nft = this.dataset.nft;
+                openNftDetail(nft);
+            });
+        });
+
+        function toggleTokens(accountId, event) {
+            event.stopPropagation();
+            
+            const tokensList = document.getElementById(`tokens-${accountId}`);
+            const arrow = document.getElementById(`arrow-${accountId}`);
+            
+            if (tokensList.classList.contains('expanded')) {
+                tokensList.classList.remove('expanded');
+                arrow.classList.remove('expanded');
+            } else {
+                tokensList.classList.add('expanded');
+                arrow.classList.add('expanded');
+            }
+        }
+
+        function openAccountDetail(crypto, account) {
+            currentCrypto = crypto;
+            currentAccount = account;
+            
+            const accountKey = `${crypto}-${account}`;
+            const data = accountData[accountKey];
+            
+            if (!data) return;
+
+            document.querySelectorAll('.account-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Add active class to selected account
+            const selectedAccount = document.querySelector(`[data-crypto="${crypto}"][data-account="${account}"]`);
+            if (selectedAccount) {
+                selectedAccount.classList.add('active');
+            }
+
+            // Update detail header
+            document.getElementById('detailIcon').className = `detail-crypto-icon ${crypto}`;
+            document.getElementById('detailIcon').textContent = cryptoIcons[crypto];
+            document.getElementById('detailAccountName').textContent = `Account ${account}`;
+            document.getElementById('detailBalance').textContent = `${data.balance} (${data.usd})`;
+            
+            // Update action buttons
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons[0].textContent = `Send ${crypto.toUpperCase()}`;
+            actionButtons[1].textContent = `Receive ${crypto.toUpperCase()}`;
+            actionButtons[2].textContent = `Swap ${crypto.toUpperCase()}`;
+            
+            // Show detail view
+            document.getElementById('detailView').style.display = 'block';
+            document.getElementById('mainView').style.display = 'none';
+        }
+
+        function openTokenDetail(token) {
+            currentToken = token;
+            const data = tokenData[token];
+            
+            if (!data) return;
+
+            // Update detail header for token
+            document.getElementById('detailIcon').className = `detail-crypto-icon weth`;
+            document.getElementById('detailIcon').textContent = 'Ξ';
+            document.getElementById('detailAccountName').textContent = data.name;
+            document.getElementById('detailBalance').textContent = `${data.balance} (${data.usd})`;
+            
+            // Update action buttons for token
+            const actionButtons = document.querySelectorAll('.action-btn');
+            actionButtons[0].textContent = `Send ${data.name.split(' ')[0]}`;
+            actionButtons[1].textContent = `Receive ${data.name.split(' ')[0]}`;
+            actionButtons[2].textContent = `Swap ${data.name.split(' ')[0]}`;
+            
+            // Show detail view
+            document.getElementById('detailView').style.display = 'block';
+            document.getElementById('mainView').style.display = 'none';
+        }
+
+        function openNftDetail(nft) {
+            currentNft = nft;
+            const data = nftData[nft];
+            
+            if (!data) return;
+
+            // Update NFT detail header
+            document.getElementById('nftCollectionIcon').textContent = data.icon;
+            document.getElementById('nftTitle').textContent = data.name;
+            document.getElementById('nftCollection').textContent = `Collection: ${data.collection}`;
+            document.getElementById('nftQuantity').textContent = `Quantity: ${data.quantity}`;
+            document.getElementById('nftImage').textContent = data.icon;
+            
+            // Show NFT detail view
+            document.getElementById('nftDetailView').style.display = 'block';
+            document.getElementById('mainView').style.display = 'none';
+        }
+
+        function closeDetail() {
+            document.getElementById('detailView').style.display = 'none';
+            document.getElementById('mainView').style.display = 'block';
+        }
+
+        function closeNftDetail() {
+            document.getElementById('nftDetailView').style.display = 'none';
+            document.getElementById('mainView').style.display = 'block';
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+            
+            if (tab === 'transactions') {
+                document.getElementById('transactionsContent').style.display = 'block';
+                document.getElementById('swapsContent').style.display = 'none';
+            } else {
+                document.getElementById('transactionsContent').style.display = 'none';
+                document.getElementById('swapsContent').style.display = 'block';
+            }
+        }
+
+        function switchNftTab(tab) {
+            const nftTabs = document.querySelectorAll('#nftDetailView .tab');
+            nftTabs.forEach(t => t.classList.remove('active'));
+            document.querySelector(`[onclick="switchNftTab('${tab}')"]`).classList.add('active');
+            
+            if (tab === 'transactions') {
+                document.getElementById('nftTransactionsContent').style.display = 'block';
+                document.getElementById('nftSwapsContent').style.display = 'none';
+            } else {
+                document.getElementById('nftTransactionsContent').style.display = 'none';
+                document.getElementById('nftSwapsContent').style.display = 'block';
+            }
+        }
+
+        function refreshNft() {
+            swal('Refreshed!', 'NFT data has been refreshed', 'success');
+        }
+
+        function showNftInfo() {
+            const data = nftData[currentNft];
+            if (data) {
+                swal('NFT Info', `Name: ${data.name}\nCollection: ${data.collection}\nQuantity: ${data.quantity}`, 'info');
+            }
+        }
+
+        function sendNft() {
+            document.getElementById('sendNftModal').style.display = 'flex';
+        }
+
+        function receiveNft() {
+            document.getElementById('receiveNftModal').style.display = 'flex';
+        }
+
+        function closeSendNftModal() {
+            document.getElementById('sendNftModal').style.display = 'none';
+            // Reset form
+            document.getElementById('nftRecipientAddress').value = '';
+            document.getElementById('nftQuantity').value = '1';
+            document.getElementById('nftSendPassword').value = '';
+        }
+
+        function closeReceiveNftModal() {
+            document.getElementById('receiveNftModal').style.display = 'none';
+        }
+
+        function setMaxNftQuantity() {
+            document.getElementById('nftQuantity').value = '1';
+        }
+
+        function executeSendNft() {
+            const recipient = document.getElementById('nftRecipientAddress').value;
+            const quantity = document.getElementById('nftQuantity').value;
+            const password = document.getElementById('nftSendPassword').value;
+            
+            if (!recipient || !quantity || !password) {
+                swal('Error', 'Please fill all fields', 'error');
+                return;
+            }
+            
+            const nftName = nftData[currentNft].name;
+            swal('Success!', `NFT sent successfully!\nNFT: ${nftName}\nQuantity: ${quantity}\nTo: ${recipient.substring(0, 20)}...`, 'success');
+            closeSendNftModal();
+        }
+
+        function copyNftAddress() {
+            const address = '0xc14F824860a2A6Dae183e1761a408C7C4f8582c9';
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(address).then(() => {
+                    swal('Copied!', 'NFT address copied to clipboard', 'success');
+                });
+            } else {
+                swal('Copied!', 'NFT address copied to clipboard', 'success');
+            }
+        }
+
+        function copyNftFullAddress() {
+            const address = '0xc14F824860a2A6Dae183e1761a408C7C4f8582c9';
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(address).then(() => {
+                    swal('Copied!', 'Full NFT address copied to clipboard', 'success');
+                });
+            } else {
+                swal('Copied!', 'Full NFT address copied to clipboard', 'success');
+            }
+        }
+
+        // Send Modal
+        function openSendModal() {
+            let address = '';
+            
+            if (currentToken) {
+                const data = tokenData[currentToken];
+                address = data ? data.address : '';
+            } else if (currentNft) {
+                const data = nftData[currentNft];
+                address = data ? data.address : '';
+            } else {
+                const accountKey = `${currentCrypto}-${currentAccount}`;
+                const data = accountData[accountKey];
+                address = data ? data.address : '';
+            }
+            
+            document.getElementById('recipientAddress').placeholder = address;
+            document.getElementById('sendModal').style.display = 'flex';
+        }
+
+        function closeSendModal() {
+            document.getElementById('sendModal').style.display = 'none';
+            // Reset form
+            document.getElementById('recipientAddress').value = '';
+            document.getElementById('sendAmountSOL').value = '';
+            document.getElementById('sendAmountUSD').value = '';
+            document.getElementById('sendPassword').value = '';
+        }
+
+        function setMaxAmount() {
+            if (currentToken) {
+                const data = tokenData[currentToken];
+                if (data) {
+                    const balance = data.balance.match(/[\d.]+/)[0];
+                    document.getElementById('sendAmountSOL').value = balance;
+                    const usdValue = (parseFloat(balance) * 100).toFixed(2);
+                    document.getElementById('sendAmountUSD').value = usdValue;
+                }
+            } else {
+                const accountKey = `${currentCrypto}-${currentAccount}`;
+                const data = accountData[accountKey];
+                
+                if (data) {
+                    const balance = data.balance.match(/[\d.]+/)[0];
+                    document.getElementById('sendAmountSOL').value = balance;
+                    const usdValue = (parseFloat(balance) * 100).toFixed(2);
+                    document.getElementById('sendAmountUSD').value = usdValue;
+                }
+            }
+        }
+
+        function executeSend() {
+            const recipient = document.getElementById('recipientAddress').value;
+            const amount = document.getElementById('sendAmountSOL').value;
+            const password = document.getElementById('sendPassword').value;
+            
+            if (!recipient || !amount || !password) {
+                swal('Error', 'Please fill all fields', 'error');
+                return;
+            }
+            
+            let currency = '';
+            if (currentToken) {
+                currency = tokenData[currentToken].name;
+            } else {
+                currency = currentCrypto.toUpperCase();
+            }
+            
+            // Simulate transaction
+            swal('Success!', `Transaction complete with success!\nAmount: ${amount} ${currency}\nTo: ${recipient.substring(0, 20)}...`, 'success');
+            closeSendModal();
+        }
+
+        // Receive Modal
+        function openReceiveModal() {
+            let address = '';
+            
+            if (currentToken) {
+                const data = tokenData[currentToken];
+                address = data ? data.address : '';
+            } else if (currentNft) {
+                const data = nftData[currentNft];
+                address = data ? data.address : '';
+            } else {
+                const accountKey = `${currentCrypto}-${currentAccount}`;
+                const data = accountData[accountKey];
+                address = data ? data.address : '';
+            }
+            
+            document.querySelector('.address-display').innerHTML = `
+                ${address}
+                <button class="copy-btn" onclick="copyAddress()">Copy</button>
+            `;
+            
+            let prefix = currentToken ? 'ethereum' : currentCrypto;
+            document.querySelectorAll('.address-display')[1].innerHTML = `
+                ${prefix}:${address}
+                <button class="copy-btn" onclick="copyFullAddress()">Copy</button>
+            `;
+            
+            document.getElementById('receiveModal').style.display = 'flex';
+        }
+
+        function closeReceiveModal() {
+            document.getElementById('receiveModal').style.display = 'none';
+        }
+
+        function copyAddress() {
+            let address = '';
+            
+            if (currentToken) {
+                const data = tokenData[currentToken];
+                address = data ? data.address : '';
+            } else if (currentNft) {
+                const data = nftData[currentNft];
+                address = data ? data.address : '';
+            } else {
+                const accountKey = `${currentCrypto}-${currentAccount}`;
+                const data = accountData[accountKey];
+                address = data ? data.address : '';
+            }
+            
+            if (address && navigator.clipboard) {
+                navigator.clipboard.writeText(address).then(() => {
+                    swal('Copied!', 'Address copied in note', 'success');
+                });
+            } else {
+                swal('Copied!', 'Address copied in note', 'success');
+            }
+        }
+
+        function copyFullAddress() {
+            let address = '';
+            let prefix = currentToken ? 'ethereum' : currentCrypto;
+            
+            if (currentToken) {
+                const data = tokenData[currentToken];
+                address = data ? data.address : '';
+            } else if (currentNft) {
+                const data = nftData[currentNft];
+                address = data ? data.address : '';
+            } else {
+                const accountKey = `${currentCrypto}-${currentAccount}`;
+                const data = accountData[accountKey];
+                address = data ? data.address : '';
+            }
+            
+            const fullAddress = `${prefix}:${address}`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(fullAddress).then(() => {
+                    swal('Copied!', 'Full address copied in note', 'success');
+                });
+            } else {
+                swal('Copied!', 'Full address copied in note', 'success');
+            }
+        }
+
+        // Swap Modal
+        function openSwapModal() {
+            document.getElementById('swapModal').style.display = 'flex';
+        }
+
+        function closeSwapModal() {
+            document.getElementById('swapModal').style.display = 'none';
+            document.getElementById('swapPassword').value = '';
+        }
+
+        function continueSwap() {
+            const password = document.getElementById('swapPassword').value;
+            
+            if (!password) {
+                swal('Error', 'Insert your password to continue', 'error');
+                return;
+            }
+            
+            // Close first modal and open second
+            closeSwapModal();
+            document.getElementById('swapDetailsModal').style.display = 'flex';
+        }
+
+        function closeSwapDetailsModal() {
+            document.getElementById('swapDetailsModal').style.display = 'none';
+        }
+
+        function getQuote() {
+            const destinationWallet = document.querySelector('#swapDetailsModal select').value;
+            const amount = document.querySelector('#swapDetailsModal input[type="number"]').value;
+            
+            if (!amount || amount <= 0) {
+                swal('Error', 'Insert a valid amount', 'error');
+                return;
+            }
+            
+            // Simulate getting quote
+            const randomRate = (Math.random() * 0.1 + 0.95).toFixed(4);
+            const estimatedReceive = (parseFloat(amount) * randomRate).toFixed(6);
+            
+            swal('Quotation', `You'll receive ${estimatedReceive} in your destination coin\nExchange rate: ${randomRate}`, 'info')
+                .then(() => {
+                    swal('Swap Completed!', 'The swap was completed with success!', 'success');
+                    closeSwapDetailsModal();
+                });
+        }
+
+        // Auto-convert between SOL and USD amounts
+        document.getElementById('sendAmountSOL').addEventListener('input', function() {
+            const solAmount = parseFloat(this.value) || 0;
+            const usdAmount = (solAmount * 147).toFixed(2); // Mock SOL price
+            document.getElementById('sendAmountUSD').value = usdAmount;
+        });
+
+        document.getElementById('sendAmountUSD').addEventListener('input', function() {
+            const usdAmount = parseFloat(this.value) || 0;
+            const solAmount = (usdAmount / 147).toFixed(4); // Mock SOL price
+            document.getElementById('sendAmountSOL').value = solAmount;
+        });
+
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+
+        // Add some animation effects
+        document.querySelectorAll('.account-item, .token-item, .nft-item').forEach(item => {
+            item.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.98)';
+            });
+            
+            item.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simulate real-time balance updates
+        function updateBalances() {
+            const accounts = document.querySelectorAll('.account-item');
+            accounts.forEach(account => {
+                const balanceElement = account.querySelector('.account-balance');
+                if (Math.random() < 0.1) { // 10% chance to update
+                    const currentBalance = balanceElement.textContent;
+                    const number = parseFloat(currentBalance.match(/[\d.]+/)[0]);
+                    const unit = currentBalance.match(/[a-zA-Z]+/)[0];
+                    const change = (Math.random() - 0.5) * 0.1;
+                    const newBalance = Math.max(0, number + change).toFixed(2);
+                    balanceElement.textContent = `${newBalance} ${unit}`;
+                }
+            });
+        }
+
+        // Update balances every 30 seconds
+        setInterval(updateBalances, 30000);
+
+        // Add touch feedback for buttons
+        document.querySelectorAll('.action-btn, .submit-btn, .copy-btn, .max-btn, .nft-action-btn').forEach(btn => {
+            btn.addEventListener('touchstart', function() {
+                this.style.transform = 'scale(0.95)';
+            });
+            
+            btn.addEventListener('touchend', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

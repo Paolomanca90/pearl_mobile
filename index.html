@@ -1,0 +1,1580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pearl Browser</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/14.0.0/material-components-web.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --md-sys-color-primary: #9333ea;
+            --md-sys-color-on-primary: #ffffff;
+            --md-sys-color-primary-container: #2d1b69;
+            --md-sys-color-on-primary-container: #ffffff;
+            --md-sys-color-surface: #1a1a1a;
+            --md-sys-color-on-surface: #ffffff;
+            --md-sys-color-surface-variant: rgba(255, 255, 255, 0.1);
+            --md-sys-color-outline: rgba(255, 255, 255, 0.2);
+            --md-sys-color-incognito: #424242;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 100%);
+            color: white;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        body.incognito-mode {
+            background: linear-gradient(135deg, #212121 0%, #424242 100%);
+        }
+
+        /* Header */
+        .header {
+            background: rgba(45, 27, 105, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header.incognito {
+            background: rgba(66, 66, 66, 0.95);
+        }
+
+        .address-bar {
+            flex: 1;
+            background: var(--md-sys-color-surface-variant);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 24px;
+            padding: 12px 16px;
+            color: white;
+            font-size: 16px;
+            outline: none;
+            width: 100%;
+        }
+
+        .address-bar::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .address-bar:focus {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--md-sys-color-primary);
+        }
+
+        /* Content container */
+        .content-container {
+            height: calc(100vh - 140px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Home content */
+        .home-content {
+            padding: 24px 16px;
+            height: 100%;
+            overflow-y: auto;
+            display: block;
+        }
+
+        .home-content.hidden {
+            display: none;
+        }
+
+        /* Incognito home content */
+        .incognito-home {
+            display: none;
+            padding: 24px 16px;
+            height: 100%;
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        .incognito-home.active {
+            display: block;
+        }
+
+        .incognito-icon {
+            font-size: 80px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 16px;
+        }
+
+        .incognito-title {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: white;
+        }
+
+        .incognito-description {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.5;
+            max-width: 300px;
+            margin: 0 auto 32px;
+        }
+
+        /* Search page */
+        .search-page {
+            padding: 24px 16px;
+            height: 100%;
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 50px;
+        }
+
+        .search-page.active {
+            display: flex;
+        }
+
+        .search-message {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+        }
+
+        /* Browser view */
+        .browser-view {
+            width: 100%;
+            height: 100%;
+            display: none;
+            position: relative;
+        }
+
+        .browser-view.active {
+            display: block;
+        }
+
+        .browser-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: white;
+        }
+
+        /* Brand section */
+        .brand-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .pearl-logo {
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, #4a4a4a 20%, #1a1a1a 70%);
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pearl-logo::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 300;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Shortcuts grid */
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .mdc-card {
+            background: var(--md-sys-color-surface-variant) !important;
+            border: 1px solid var(--md-sys-color-outline);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mdc-card:hover {
+            background: rgba(255, 255, 255, 0.15) !important;
+            transform: translateY(-2px);
+        }
+
+        .shortcut-content {
+            padding: 16px 8px;
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+
+        .shortcut-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6b46c1, #9333ea);
+            border-radius: 8px;
+            margin: 0 auto 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .shortcut-title {
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        /* Recent section */
+        .recent-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 16px;
+            padding-left: 4px;
+        }
+
+        .mdc-list {
+            background: transparent !important;
+        }
+
+        .mdc-list-item {
+            background: var(--md-sys-color-surface-variant);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            color: white !important;
+            cursor: pointer;
+            align-items: center !important;
+        }
+
+        .mdc-list-item:hover {
+            background: rgba(255, 255, 255, 0.12) !important;
+        }
+
+        .site-favicon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, #6b46c1, #9333ea);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            margin-right: 12px;
+        }
+
+        .site-title {
+            font-size: 14px;
+            font-weight: 400;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .site-url {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Tab icon with count */
+        .tab-icon-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab-count-badge {
+            width: 20px;
+            height: 20px;
+            margin: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* Tabs screen */
+        .tabs-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b69 100%);
+            z-index: 300;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tabs-screen.incognito {
+            background: linear-gradient(135deg, #212121 0%, #424242 100%);
+        }
+
+        .tabs-screen.open {
+            transform: translateY(0);
+        }
+
+        .tabs-screen-header {
+            padding: 16px;
+            position: relative;
+            border-bottom: 1px solid var(--md-sys-color-outline);
+            background: rgba(45, 27, 105, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .tabs-screen-header.incognito {
+            background: rgba(66, 66, 66, 0.95);
+        }
+
+        .tabs-header-left {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .tabs-mode-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tabs-mode-icon.active {
+            background: var(--md-sys-color-primary);
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .tabs-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .tabs-count {
+            font-size: 18px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .tabs-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .tabs-grid-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        /* Single tabs view */
+        .single-tabs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .single-tab-item {
+            background: var(--md-sys-color-surface-variant);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 200px;
+            position: relative;
+        }
+
+        .single-tab-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+
+        .single-tab-item.incognito {
+            border-color: var(--md-sys-color-incognito);
+        }
+
+        .tab-preview {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-preview.incognito {
+            background: linear-gradient(135deg, #6b7280, #9ca3af);
+        }
+
+        .tab-website-icon {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .tab-close-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-close-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .tab-info-bar {
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-favicon-small {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #6b46c1, #9333ea);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .tab-info-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .tab-title-small {
+            font-size: 12px;
+            font-weight: 500;
+            color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tab-url-small {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.6);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Groups view */
+        .groups-container {
+            display: none;
+        }
+
+        .groups-container.active {
+            display: block;
+        }
+
+        .group-item {
+            background: var(--md-sys-color-surface-variant);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 16px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .group-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--md-sys-color-outline);
+        }
+
+        .group-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ff6b6b;
+        }
+
+        .group-info {
+            flex: 1;
+        }
+
+        .group-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .group-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .group-tabs-preview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            height: 120px;
+        }
+
+        .group-tab-preview {
+            background: linear-gradient(135deg, #4ade80, #22d3ee);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .group-tab-preview:nth-child(1) { background: linear-gradient(135deg, #f59e0b, #f97316); }
+        .group-tab-preview:nth-child(2) { background: linear-gradient(135deg, #10b981, #059669); }
+        .group-tab-preview:nth-child(3) { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        .group-tab-preview:nth-child(4) { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+        .group-plus-icon {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Bookmarks modal */
+        .bookmarks-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 26, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 400;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .bookmarks-modal.open {
+            transform: translateY(0);
+        }
+
+        .bookmarks-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--md-sys-color-outline);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .bookmarks-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .bookmarks-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .bookmark-item {
+            background: var(--md-sys-color-surface-variant);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bookmark-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .bookmark-favicon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #6b46c1, #9333ea);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .bookmark-info {
+            flex: 1;
+        }
+
+        .bookmark-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .bookmark-url {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* New tab FAB */
+        .new-tab-fab {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: var(--md-sys-color-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(147, 51, 234, 0.4);
+            transition: all 0.2s;
+            z-index: 310;
+        }
+
+        .new-tab-fab:hover {
+            transform: scale(1.1);
+        }
+
+        /* Menu overlay */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(26, 26, 26, 0.98);
+            backdrop-filter: blur(20px);
+            z-index: 400;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-overlay.open {
+            transform: translateY(0);
+        }
+
+        .menu-header {
+            padding: 16px;
+            border-bottom: 1px solid var(--md-sys-color-outline);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-title {
+            font-size: 20px;
+            font-weight: 500;
+            color: white;
+        }
+
+        .menu-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 24px;
+            color: white;
+            text-decoration: none;
+            transition: background 0.2s;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .menu-item .material-icons {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Bottom navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--md-sys-color-outline);
+            padding: 8px 0;
+            display: flex;
+            justify-content: space-around;
+            z-index: 50;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
+            min-width: 60px;
+        }
+
+        .nav-item.active {
+            color: var(--md-sys-color-primary);
+            background: rgba(147, 51, 234, 0.1);
+        }
+
+        .nav-item:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 380px) {
+            .shortcuts-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .single-tabs-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header" id="header">
+        <input type="text" class="address-bar" id="addressBar" placeholder="Search or type URL">
+        <a href="./wallet.html" class="nav-item" style="text-decoration: none;">
+            <span class="material-icons nav-icon">wallet</span>
+        </a>
+    </div>
+
+    <!-- Content Container -->
+    <div class="content-container">
+        <!-- Home Content -->
+        <div class="home-content" id="homeContent">
+            <!-- Brand Section -->
+            <div class="brand-section">
+                <div class="pearl-logo"></div>
+                <h1 class="app-title">Pearl</h1>
+                <p class="app-subtitle">Secure and private browser</p>
+            </div>
+
+            <!-- Shortcuts Grid -->
+            <div class="shortcuts-grid">
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://google.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">search</span>
+                        </div>
+                        <div class="shortcut-title">Google</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://youtube.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">play_circle</span>
+                        </div>
+                        <div class="shortcut-title">YouTube</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://github.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">code</span>
+                        </div>
+                        <div class="shortcut-title">GitHub</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://stackoverflow.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">help</span>
+                        </div>
+                        <div class="shortcut-title">Stack Overflow</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://reddit.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">forum</span>
+                        </div>
+                        <div class="shortcut-title">Reddit</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://twitter.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">chat</span>
+                        </div>
+                        <div class="shortcut-title">Twitter</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://linkedin.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">work</span>
+                        </div>
+                        <div class="shortcut-title">LinkedIn</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://docs.microsoft.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">description</span>
+                        </div>
+                        <div class="shortcut-title">Docs</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recent Section -->
+            <div class="recent-section">
+                <h2 class="section-title">Recently visited</h2>
+                
+                <ul class="mdc-list">
+                    <li class="mdc-list-item" onclick="navigateToSite('https://docs.microsoft.com/dotnet')">
+                        <div class="site-favicon">
+                            <span class="material-icons" style="font-size: 14px;">description</span>
+                        </div>
+                        <div>
+                            <div class="site-title">.NET Documentation</div>
+                            <div class="site-url">docs.microsoft.com</div>
+                        </div>
+                    </li>
+                    
+                    <li class="mdc-list-item" onclick="navigateToSite('https://github.com')">
+                        <div class="site-favicon">
+                            <span class="material-icons" style="font-size: 14px;">code</span>
+                        </div>
+                        <div>
+                            <div class="site-title">My project</div>
+                            <div class="site-url">github.com</div>
+                        </div>
+                    </li>
+                    
+                    <li class="mdc-list-item" onclick="navigateToSite('https://stackoverflow.com/questions/tagged/c%23')">
+                        <div class="site-favicon">
+                            <span class="material-icons" style="font-size: 14px;">help</span>
+                        </div>
+                        <div>
+                            <div class="site-title">C# Questions</div>
+                            <div class="site-url">stackoverflow.com</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Incognito Home Content -->
+        <div class="incognito-home" id="incognitoHome">
+            <div class="incognito-icon">
+                <span class="material-icons" style="font-size: inherit;">visibility_off</span>
+            </div>
+            <h2 class="incognito-title">You're incognito</h2>
+            <p class="incognito-description">
+                Pearl won't save your browsing history, cookies, site data, or information entered in forms. Downloaded files and bookmarks will be saved.
+            </p>
+            
+            <!-- Shortcuts Grid for Incognito -->
+            <div class="shortcuts-grid">
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://google.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">search</span>
+                        </div>
+                        <div class="shortcut-title">Google</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://duckduckgo.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">security</span>
+                        </div>
+                        <div class="shortcut-title">DuckDuckGo</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://protonmail.com')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">email</span>
+                        </div>
+                        <div class="shortcut-title">ProtonMail</div>
+                    </a>
+                </div>
+                
+                <div class="mdc-card">
+                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://signal.org')">
+                        <div class="shortcut-icon">
+                            <span class="material-icons">chat</span>
+                        </div>
+                        <div class="shortcut-title">Signal</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Page -->
+        <div class="search-page" id="searchPage">
+            <div class="search-message">Type in the address bar to start searching</div>
+        </div>
+
+        <!-- Browser View -->
+        <div class="browser-view" id="browserView">
+            <iframe class="browser-iframe" id="browserIframe" src="about:blank"></iframe>
+        </div>
+    </div>
+
+    <!-- Tabs Screen -->
+    <div class="tabs-screen" id="tabsScreen">
+        <div class="tabs-screen-header" id="tabsScreenHeader">
+            <div class="tabs-header-left">
+                <div class="tabs-mode-icon active" id="singleTabsIcon" onclick="switchTabsMode('single')">
+                    <div class="tab-icon-container">
+                        <div class="tab-count-badge" style="margin: auto;" id="tabCountBadge2">3</div>
+                    </div>
+                </div>
+                <div class="tabs-mode-icon" id="groupTabsIcon" onclick="switchTabsMode('groups')">
+                    <span class="material-icons">grid_view</span>
+                </div>
+            </div>
+            <button class="mdc-icon-button" style="    
+            position: absolute;
+            top: 50%;
+            right: 2px;
+            transform: translateY(-50%);" onclick="closeTabs()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        
+        <div class="tabs-grid-container">
+            <!-- Single Tabs View -->
+            <div class="single-tabs-grid" id="singleTabsGrid">
+                <!-- Tabs will be dynamically added here -->
+            </div>
+            
+            <!-- Groups View -->
+            <div class="groups-container" id="groupsContainer">
+                <div class="group-item">
+                    <div class="group-header">
+                        <div class="group-color" style="background: #ff6b6b;"></div>
+                        <div class="group-info">
+                            <div class="group-title">2 tabs</div>
+                            <div class="group-subtitle">Created just now</div>
+                        </div>
+                        <button class="mdc-icon-button">
+                            <span class="material-icons">more_vert</span>
+                        </button>
+                    </div>
+                    <div class="group-tabs-preview">
+                        <div class="group-tab-preview"></div>
+                        <div class="group-tab-preview"></div>
+                        <div class="group-tab-preview">
+                            <span class="group-plus-icon">+3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="new-tab-fab" onclick="addNewTab()">
+            <span class="material-icons">add</span>
+        </div>
+    </div>
+
+    <!-- Bookmarks Modal -->
+    <div class="bookmarks-modal" id="bookmarksModal">
+        <div class="bookmarks-header">
+            <div class="bookmarks-title">Bookmarks</div>
+            <button class="mdc-icon-button" onclick="closeBookmarks()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="bookmarks-content">
+            <div class="bookmark-item" onclick="navigateToSite('https://github.com')">
+                <div class="bookmark-favicon">
+                    <span class="material-icons">code</span>
+                </div>
+                <div class="bookmark-info">
+                    <div class="bookmark-title">GitHub</div>
+                    <div class="bookmark-url">github.com</div>
+                </div>
+            </div>
+            
+            <div class="bookmark-item" onclick="navigateToSite('https://stackoverflow.com')">
+                <div class="bookmark-favicon">
+                    <span class="material-icons">help</span>
+                </div>
+                <div class="bookmark-info">
+                    <div class="bookmark-title">Stack Overflow</div>
+                    <div class="bookmark-url">stackoverflow.com</div>
+                </div>
+            </div>
+            
+            <div class="bookmark-item" onclick="navigateToSite('https://docs.microsoft.com')">
+                <div class="bookmark-favicon">
+                    <span class="material-icons">description</span>
+                </div>
+                <div class="bookmark-info">
+                    <div class="bookmark-title">.NET Documentation</div>
+                    <div class="bookmark-url">docs.microsoft.com</div>
+                </div>
+            </div>
+            
+            <div class="bookmark-item" onclick="navigateToSite('https://developer.mozilla.org')">
+                <div class="bookmark-favicon">
+                    <span class="material-icons">web</span>
+                </div>
+                <div class="bookmark-info">
+                    <div class="bookmark-title">MDN Web Docs</div>
+                    <div class="bookmark-url">developer.mozilla.org</div>
+                </div>
+            </div>
+            
+            <div class="bookmark-item" onclick="navigateToSite('https://react.dev')">
+                <div class="bookmark-favicon">
+                    <span class="material-icons">code</span>
+                </div>
+                <div class="bookmark-info">
+                    <div class="bookmark-title">React Documentation</div>
+                    <div class="bookmark-url">react.dev</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-header">
+            <div class="menu-title">Pearl Browser</div>
+            <button class="mdc-icon-button" onclick="closeMenu()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="menu-content">
+            <a href="#" class="menu-item" onclick="addNewTab(); closeMenu();">
+                <span class="material-icons">add</span>
+                <span>New tab</span>
+            </a>
+            <a href="#" class="menu-item" onclick="addNewIncognitoTab(); closeMenu();">
+                <span class="material-icons">visibility_off</span>
+                <span>New incognito tab</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showBookmarks(); closeMenu();">
+                <span class="material-icons">bookmark</span>
+                <span>Bookmarks</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showHistory(); closeMenu();">
+                <span class="material-icons">history</span>
+                <span>History</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showDownloads(); closeMenu();">
+                <span class="material-icons">download</span>
+                <span>Downloads</span>
+            </a>
+            <a href="./wallet.html" class="menu-item">
+                <span class="material-icons">wallet</span>
+                <span>Wallet</span>
+            </a>
+            <a href="#" class="menu-item">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgba(255, 255, 255, 0.7)"><path d="M120-120v-200h160l160-160v-128q-36-13-58-43.5T360-720q0-50 35-85t85-35q50 0 85 35t35 85q0 38-22 68.5T520-608v128l160 160h160v200H640v-122L480-402 320-242v122H120Z"/></svg>
+                <span>Dapps Menu</span>
+            </a>
+            <a href="#" class="menu-item">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgba(255, 255, 255, 0.7)"><path d="M480-40q-50 0-85-35t-35-85q0-14 2.5-26.5T371-211L211-372q-12 5-25 8.5t-27 3.5q-50 0-84.5-35T40-480q0-50 34.5-85t84.5-35q39 0 70 22.5t43 57.5h95q9-26 28-44.5t45-27.5v-95q-35-12-57.5-43T360-800q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l160 160q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35q-39 0-70-22.5T687-440h-95q-9 26-27.5 45T520-367v94q35 12 57.5 43t22.5 70q0 50-35 85t-85 35Zm-40-233v-94q-13-5-24-12t-20.5-16.5Q386-405 379-416t-12-24h-95q0 1-.5 2.5l-1 3q-.5 1.5-1 2.5l-1.5 3 29 29q24 24 51 51.5t51 51.5l29 29q2-1 3.5-1.5t3-1.5 3-1.5q1.5-.5 2.5-.5Zm152-247h95q0-2 .5-3.5t1.5-3 1.5-3q.5-1.5 1.5-2.5l-29-29-51-51-51-51-29-29q-1 1-2.5 1.5t-3 1.5-3 1.5q-1.5.5-3.5.5v95q12 4 23.5 11.5T564-564q9 9 16.5 20.5T592-520Zm208 80q17 0 28.5-11.5T840-480q0-17-11.5-28.5T800-520q-17 0-28.5 11.5T760-480q0 17 11.5 28.5T800-440Zm-320 0q17 0 28.5-11.5T520-480q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480q0 17 11.5 28.5T480-440Zm0 320q17 0 28.5-11.5T520-160q0-17-11.5-28.5T480-200q-17 0-28.5 11.5T440-160q0 17 11.5 28.5T480-120ZM160-440q17 0 28.5-11.5T200-480q0-17-11.5-28.5T160-520q-17 0-28.5 11.5T120-480q0 17 11.5 28.5T160-440Zm320-320q17 0 28.5-11.5T520-800q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800q0 17 11.5 28.5T480-760Z"/></svg>
+                <span>AI Menu</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="material-icons">qr_code</span>
+                <span>QR Code</span>
+            </a>
+            <a href="#" class="menu-item" onclick="showSettings(); closeMenu();">
+                <span class="material-icons">settings</span>
+                <span>Settings</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active" id="homeNav" onclick="showHome()">
+            <span class="material-icons nav-icon">home</span>
+        </div>
+        <div class="nav-item" id="bookmarksNav" onclick="showBookmarks()">
+            <span class="material-icons nav-icon">bookmark</span>
+        </div>
+        <div class="nav-item" id="searchNav" onclick="showSearch()">
+            <span class="material-icons nav-icon">search</span>
+        </div>
+        <div class="nav-item" id="tabsNav" onclick="toggleTabs()">
+            <div class="tab-icon-container">
+                <div class="tab-count-badge" id="tabCountBadge">3</div>
+            </div>
+        </div>
+        <div class="nav-item" id="menuNav" onclick="toggleMenu()">
+            <span class="material-icons nav-icon">more_vert</span>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/14.0.0/material-components-web.min.js"></script>
+    <script>
+        let tabs = [
+            { id: 1, title: 'Pearl Browser - Home', url: 'pearl://home', favicon: 'home', isIncognito: false },
+            { id: 2, title: '.NET Documentation', url: 'docs.microsoft.com', favicon: 'description', isIncognito: false },
+            { id: 3, title: 'GitHub', url: 'github.com', favicon: 'code', isIncognito: false }
+        ];
+        let currentTabId = 1;
+        let nextTabId = 4;
+        let currentView = 'home'; // 'home', 'search', 'browser'
+        let currentTabsMode = 'single'; // 'single', 'groups'
+        let isIncognitoMode = false;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            mdc.autoInit();
+            renderTabs();
+            updateTabCount();
+            
+            // Address bar functionality
+            const addressBar = document.getElementById('addressBar');
+            addressBar.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && this.value.trim()) {
+                    navigateToUrl(this.value.trim());
+                }
+            });
+            
+            addressBar.addEventListener('focus', function() {
+                if (currentView === 'home') {
+                    showSearch();
+                }
+            });
+        });
+
+        // Navigation functions
+        function navigateToUrl(url) {
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                if (url.includes('.') || url.includes(' ')) {
+                    if (!url.includes(' ')) {
+                        url = 'https://' + url;
+                    } else {
+                        url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+                    }
+                } else {
+                    url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
+                }
+            }
+            
+            showBrowser(url);
+            updateCurrentTab(url);
+        }
+
+        function navigateToSite(url) {
+            const bookmarsModal = document.getElementById('bookmarksModal');
+            if (bookmarsModal && bookmarsModal?.classList.contains('open')) {
+                bookmarsModal.classList.remove('open');
+            }
+            document.getElementById('addressBar').value = url;
+            navigateToUrl(url);
+        }
+
+        function updateCurrentTab(url) {
+            const currentTab = tabs.find(tab => tab.id === currentTabId);
+            if (currentTab) {
+                currentTab.url = url;
+                const domain = url.replace(/(^\w+:|^)\/\//, '').split('/')[0];
+                currentTab.title = domain;
+                renderTabs();
+                updateTabCount();
+            }
+        }
+
+        // View management
+        function showHome() {
+            currentView = 'home';
+            const currentTab = tabs.find(tab => tab.id === currentTabId);
+            
+            if (currentTab && currentTab.isIncognito) {
+                document.getElementById('homeContent').classList.add('hidden');
+                document.getElementById('incognitoHome').classList.add('active');
+                setIncognitoMode(true);
+            } else {
+                document.getElementById('homeContent').classList.remove('hidden');
+                document.getElementById('incognitoHome').classList.remove('active');
+                setIncognitoMode(false);
+            }
+            
+            document.getElementById('searchPage').classList.remove('active');
+            document.getElementById('browserView').classList.remove('active');
+            document.getElementById('addressBar').value = '';
+            updateActiveNav('homeNav');
+        }
+
+        function showSearch() {
+            currentView = 'search';
+            document.getElementById('homeContent').classList.add('hidden');
+            document.getElementById('incognitoHome').classList.remove('active');
+            document.getElementById('searchPage').classList.add('active');
+            document.getElementById('browserView').classList.remove('active');
+            updateActiveNav('searchNav');
+        }
+
+        function showBrowser(url) {
+            currentView = 'browser';
+            document.getElementById('homeContent').classList.add('hidden');
+            document.getElementById('incognitoHome').classList.remove('active');
+            document.getElementById('searchPage').classList.remove('active');
+            document.getElementById('browserView').classList.add('active');
+            
+            const iframe = document.getElementById('browserIframe');
+            iframe.src = url;
+            
+            updateActiveNav('');
+        }
+
+        function setIncognitoMode(incognito) {
+            isIncognitoMode = incognito;
+            const body = document.body;
+            const header = document.getElementById('header');
+            const tabsScreen = document.getElementById('tabsScreen');
+            const tabsScreenHeader = document.getElementById('tabsScreenHeader');
+            
+            if (incognito) {
+                body.classList.add('incognito-mode');
+                header.classList.add('incognito');
+                tabsScreen.classList.add('incognito');
+                tabsScreenHeader.classList.add('incognito');
+            } else {
+                body.classList.remove('incognito-mode');
+                header.classList.remove('incognito');
+                tabsScreen.classList.remove('incognito');
+                tabsScreenHeader.classList.remove('incognito');
+            }
+        }
+
+        // Tab management
+        function toggleTabs() {
+            const tabsScreen = document.getElementById('tabsScreen');
+            tabsScreen.classList.toggle('open');
+            updateTabCount();
+        }
+
+        function closeTabs() {
+            document.getElementById('tabsScreen').classList.remove('open');
+        }
+
+        function switchTabsMode(mode) {
+            currentTabsMode = mode;
+            const singleIcon = document.getElementById('singleTabsIcon');
+            const groupIcon = document.getElementById('groupTabsIcon');
+            const singleGrid = document.getElementById('singleTabsGrid');
+            const groupsContainer = document.getElementById('groupsContainer');
+            
+            if (mode === 'single') {
+                singleIcon.classList.add('active');
+                groupIcon.classList.remove('active');
+                singleGrid.style.display = 'grid';
+                groupsContainer.classList.remove('active');
+            } else {
+                groupIcon.classList.add('active');
+                singleIcon.classList.remove('active');
+                singleGrid.style.display = 'none';
+                groupsContainer.classList.add('active');
+            }
+        }
+
+        function renderTabs() {
+            const singleTabsGrid = document.getElementById('singleTabsGrid');
+            singleTabsGrid.innerHTML = '';
+            
+            tabs.forEach(tab => {
+                const tabItem = document.createElement('div');
+                tabItem.className = `single-tab-item ${tab.isIncognito ? 'incognito' : ''}`;
+                tabItem.onclick = () => navigateToSite('https://'+tab.url);
+                
+                tabItem.innerHTML = `
+                    <div class="tab-preview ${tab.isIncognito ? 'incognito' : ''}">
+                        <div class="tab-website-icon">
+                            <span class="material-icons" style="font-size: 12px;">${tab.favicon}</span>
+                        </div>
+                        <div class="tab-close-btn" onclick="event.stopPropagation(); closeTab(${tab.id})">
+                            <span class="material-icons" style="font-size: 16px;">close</span>
+                        </div>
+                    </div>
+                    <div class="tab-info-bar">
+                        <div class="tab-favicon-small">
+                            <span class="material-icons" style="font-size: 8px;">${tab.favicon}</span>
+                        </div>
+                        <div class="tab-info-text">
+                            <div class="tab-title-small">${tab.title}</div>
+                            <div class="tab-url-small">${tab.url}</div>
+                        </div>
+                    </div>
+                `;
+                
+                singleTabsGrid.appendChild(tabItem);
+            });
+        }
+
+        function updateTabCount() {
+            const count = tabs.length;
+            document.getElementById('tabCountBadge').textContent = count;
+            document.getElementById('tabCountBadge2').textContent = count;
+        }
+
+        function addNewTab() {
+            const newTab = {
+                id: nextTabId++,
+                title: 'Pearl Browser - Home',
+                url: 'pearl://home',
+                favicon: 'home',
+                isIncognito: false
+            };
+            
+            tabs.push(newTab);
+            currentTabId = newTab.id;
+            renderTabs();
+            updateTabCount();
+            showHome();
+            closeTabs();
+        }
+
+        function addNewIncognitoTab() {
+            const newTab = {
+                id: nextTabId++,
+                title: 'Pearl Browser - Incognito',
+                url: 'pearl://incognito',
+                favicon: 'visibility_off',
+                isIncognito: true
+            };
+            
+            tabs.push(newTab);
+            currentTabId = newTab.id;
+            renderTabs();
+            updateTabCount();
+            showHome();
+            closeMenu();
+        }
+
+        function closeTab(tabId) {
+            const tabIndex = tabs.findIndex(tab => tab.id === tabId);
+            if (tabIndex > -1) {
+                tabs.splice(tabIndex, 1);
+                
+                if (currentTabId === tabId) {
+                    if (tabs.length > 0) {
+                        currentTabId = tabs[Math.max(0, tabIndex - 1)].id;
+                        showHome();
+                    } else {
+                        addNewTab();
+                    }
+                }
+                
+                renderTabs();
+                updateTabCount();
+            }
+        }
+
+        function switchToTab(tabId) {
+            currentTabId = tabId;
+            const tab = tabs.find(t => t.id === tabId);
+            
+            if (tab) {
+                if (tab.url === 'pearl://home' || tab.url === 'pearl://incognito') {
+                    showHome();
+                } else {
+                    document.getElementById('addressBar').value = tab.url;
+                    showBrowser(tab.url);
+                }
+            }
+            
+            closeTabs();
+        }
+
+        // Bookmarks management
+        function showBookmarks() {
+            const bookmarksModal = document.getElementById('bookmarksModal');
+            bookmarksModal.classList.add('open');
+            updateActiveNav('bookmarksNav');
+        }
+
+        function closeBookmarks() {
+            document.getElementById('bookmarksModal').classList.remove('open');
+        }
+
+        // Menu management
+        function toggleMenu() {
+            const menuOverlay = document.getElementById('menuOverlay');
+            menuOverlay.classList.toggle('open');
+        }
+
+        function closeMenu() {
+            document.getElementById('menuOverlay').classList.remove('open');
+        }
+
+        function showHistory() {
+            alert('History page - To be implemented');
+        }
+
+        function showDownloads() {
+            alert('Downloads page - To be implemented');
+        }
+
+        function showWallet() {
+            alert('Pearl Wallet - To be implemented');
+        }
+
+        function showSettings() {
+            alert('Settings - To be implemented');
+        }
+
+        // Navigation helpers
+        function updateActiveNav(activeId) {
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            if (activeId) {
+                document.getElementById(activeId).classList.add('active');
+            }
+        }
+
+        // Close panels when clicking outside
+        document.addEventListener('click', function(e) {
+            const tabsScreen = document.getElementById('tabsScreen');
+            const menuOverlay = document.getElementById('menuOverlay');
+            const bookmarksModal = document.getElementById('bookmarksModal');
+            
+            // Close tabs screen if clicking outside
+            if (tabsScreen.classList.contains('open') && 
+                !tabsScreen.contains(e.target) && 
+                !document.getElementById('tabsNav').contains(e.target)) {
+                closeTabs();
+            }
+            
+            // Close menu if clicking outside
+            if (menuOverlay.classList.contains('open') && 
+                !menuOverlay.contains(e.target) && 
+                !document.getElementById('menuNav').contains(e.target)) {
+                closeMenu();
+            }
+            
+            // Close bookmarks if clicking outside
+            if (bookmarksModal.classList.contains('open') && 
+                !bookmarksModal.contains(e.target) && 
+                !document.getElementById('bookmarksNav').contains(e.target)) {
+                closeBookmarks();
+            }
+        });
+
+        // Handle back button in browser
+        window.addEventListener('popstate', function(e) {
+            if (currentView === 'browser') {
+                showHome();
+            }
+        });
+    </script>
+</body>
+</html>
