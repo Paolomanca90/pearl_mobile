@@ -65,6 +65,7 @@
             font-size: 16px;
             outline: none;
             width: 100%;
+            margin-right: 12px;
         }
 
         .address-bar::placeholder {
@@ -76,9 +77,337 @@
             border-color: var(--md-sys-color-primary);
         }
 
+        /* Wallet Dropdown */
+        .wallet-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .wallet-button {
+            background: var(--md-sys-color-surface-variant);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 12px;
+            padding: 8px 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .wallet-button:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .wallet-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: rgba(45, 27, 105, 0.98);
+            border: 1px solid var(--md-sys-color-outline);
+            border-radius: 12px;
+            padding: 8px 0;
+            min-width: 180px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            z-index: 200;
+            backdrop-filter: blur(10px);
+        }
+
+        .wallet-dropdown.open .wallet-dropdown-content {
+            display: block;
+        }
+
+        .wallet-dropdown-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            color: white;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .wallet-dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Fake Tabs System */
+        .tabs-container {
+            position: relative;
+            height: calc(100vh - 120px);
+            overflow: hidden;
+        }
+
+        .fake-tab {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .fake-tab.active {
+            transform: translateX(0);
+        }
+
+        .fake-tab.closing {
+            transform: translateX(-100%);
+        }
+
+        /* Tab Header */
+        .tab-header {
+            background: rgba(45, 27, 105, 0.95);
+            color: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--md-sys-color-outline);
+            backdrop-filter: blur(10px);
+        }
+
+        .tab-title {
+            font-size: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .tab-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+        }
+
+        /* Sidebar for Dapps and AI */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            background: #f8f9fa;
+            border-right: 1px solid #ddd;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+            z-index: 500;
+            transform: translateX(-100%);
+            padding-top: 60px;
+        }
+
+        .sidebar.open {
+            transform: translateX(0);
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 499;
+            display: none;
+        }
+
+        .sidebar-overlay.open {
+            display: block;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            padding: 8px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            z-index: 10;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-item {
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 16px 12px;
+            color: #333;
+            text-decoration: none;
+            transition: background 0.2s;
+            gap: 12px;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: #e3f2fd;
+            color: #2196f3;
+        }
+
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar-text {
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+            background: white;
+            overflow: auto;
+            position: relative;
+        }
+
+        /* Content Header with hamburger button */
+        .content-header {
+            background: white;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 400px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--md-sys-color-primary);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            color: #333;
+        }
+
+        .content-table th {
+            background: #f8f9fa;
+            padding: 16px 12px;
+            text-align: left;
+            font-weight: 500;
+            color: #333;
+            border-bottom: 2px solid #9333ea;
+        }
+
+        .content-table td {
+            padding: 16px 12px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .content-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .table-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6b46c1, #9333ea);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .table-link {
+            color: #333;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-link:hover {
+            color: var(--md-sys-color-primary);
+        }
+
+        .info-button {
+            background: #f0f0f0;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
         /* Content container */
         .content-container {
-            height: calc(100vh - 140px);
+            height: calc(100vh - 120px);
             position: relative;
             overflow: hidden;
         }
@@ -831,6 +1160,14 @@
             .single-tabs-grid {
                 grid-template-columns: 1fr;
             }
+
+            .sidebar {
+                width: 150px;
+            }
+
+            .sidebar.collapsed {
+                width: 50px;
+            }
         }
     </style>
 </head>
@@ -838,195 +1175,214 @@
     <!-- Header -->
     <div class="header" id="header">
         <input type="text" class="address-bar" id="addressBar" placeholder="Search or type URL">
-        <a href="./wallet.html" class="nav-item" style="text-decoration: none;">
-            <span class="material-icons nav-icon">wallet</span>
-        </a>
+        
+        <!-- Wallet Dropdown -->
+        <div class="wallet-dropdown" id="walletDropdown">
+            <div class="wallet-button" onclick="toggleWalletDropdown()">
+                <span class="material-icons">wallet</span>
+            </div>
+            <div class="wallet-dropdown-content">
+                <div class="wallet-dropdown-item" onclick="openWalletTab('Primary wallet')">
+                    <span class="material-icons">wallet</span>
+                    <span>Primary wallet</span>
+                </div>
+                <div class="wallet-dropdown-item" onclick="openWalletTab('Pearl wallet')">
+                    <span class="material-icons">wallet</span>
+                    <span>Pearl wallet</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Content Container -->
     <div class="content-container">
-        <!-- Home Content -->
-        <div class="home-content" id="homeContent">
-            <!-- Brand Section -->
-            <div class="brand-section">
-                <div class="pearl-logo"></div>
-                <h1 class="app-title">Pearl</h1>
-                <p class="app-subtitle">Secure and private browser</p>
-            </div>
+        <!-- Tabs Container -->
+        <div class="tabs-container" id="tabsContainer">
+            <!-- Home Content -->
+            <div class="home-content" id="homeContent">
+                <!-- Brand Section -->
+                <div class="brand-section">
+                    <div class="pearl-logo"></div>
+                    <h1 class="app-title">Pearl</h1>
+                    <p class="app-subtitle">Secure and private browser</p>
+                </div>
 
-            <!-- Shortcuts Grid -->
-            <div class="shortcuts-grid">
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://google.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">search</span>
-                        </div>
-                        <div class="shortcut-title">Google</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://youtube.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">play_circle</span>
-                        </div>
-                        <div class="shortcut-title">YouTube</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://github.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">code</span>
-                        </div>
-                        <div class="shortcut-title">GitHub</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://stackoverflow.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">help</span>
-                        </div>
-                        <div class="shortcut-title">Stack Overflow</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://reddit.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">forum</span>
-                        </div>
-                        <div class="shortcut-title">Reddit</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://twitter.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">chat</span>
-                        </div>
-                        <div class="shortcut-title">Twitter</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://linkedin.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">work</span>
-                        </div>
-                        <div class="shortcut-title">LinkedIn</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://docs.microsoft.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">description</span>
-                        </div>
-                        <div class="shortcut-title">Docs</div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Recent Section -->
-            <div class="recent-section">
-                <h2 class="section-title">Recently visited</h2>
-                
-                <ul class="mdc-list">
-                    <li class="mdc-list-item" onclick="navigateToSite('https://docs.microsoft.com/dotnet')">
-                        <div class="site-favicon">
-                            <span class="material-icons" style="font-size: 14px;">description</span>
-                        </div>
-                        <div>
-                            <div class="site-title">.NET Documentation</div>
-                            <div class="site-url">docs.microsoft.com</div>
-                        </div>
-                    </li>
+                <!-- Shortcuts Grid -->
+                <div class="shortcuts-grid">
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://google.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">search</span>
+                            </div>
+                            <div class="shortcut-title">Google</div>
+                        </a>
+                    </div>
                     
-                    <li class="mdc-list-item" onclick="navigateToSite('https://github.com')">
-                        <div class="site-favicon">
-                            <span class="material-icons" style="font-size: 14px;">code</span>
-                        </div>
-                        <div>
-                            <div class="site-title">My project</div>
-                            <div class="site-url">github.com</div>
-                        </div>
-                    </li>
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://youtube.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">play_circle</span>
+                            </div>
+                            <div class="shortcut-title">YouTube</div>
+                        </a>
+                    </div>
                     
-                    <li class="mdc-list-item" onclick="navigateToSite('https://stackoverflow.com/questions/tagged/c%23')">
-                        <div class="site-favicon">
-                            <span class="material-icons" style="font-size: 14px;">help</span>
-                        </div>
-                        <div>
-                            <div class="site-title">C# Questions</div>
-                            <div class="site-url">stackoverflow.com</div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://github.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">code</span>
+                            </div>
+                            <div class="shortcut-title">GitHub</div>
+                        </a>
+                    </div>
+                    
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://stackoverflow.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">help</span>
+                            </div>
+                            <div class="shortcut-title">Stack Overflow</div>
+                        </a>
+                    </div>
+                    
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://reddit.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">forum</span>
+                            </div>
+                            <div class="shortcut-title">Reddit</div>
+                        </a>
+                    </div>
+                    
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://twitter.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">chat</span>
+                            </div>
+                            <div class="shortcut-title">Twitter</div>
+                        </a>
+                    </div>
+                    
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://linkedin.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">work</span>
+                            </div>
+                            <div class="shortcut-title">LinkedIn</div>
+                        </a>
+                    </div>
+                    
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://docs.microsoft.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">description</span>
+                            </div>
+                            <div class="shortcut-title">Docs</div>
+                        </a>
+                    </div>
+                </div>
 
-        <!-- Incognito Home Content -->
-        <div class="incognito-home" id="incognitoHome">
-            <div class="incognito-icon">
-                <span class="material-icons" style="font-size: inherit;">visibility_off</span>
-            </div>
-            <h2 class="incognito-title">You're incognito</h2>
-            <p class="incognito-description">
-                Pearl won't save your browsing history, cookies, site data, or information entered in forms. Downloaded files and bookmarks will be saved.
-            </p>
-            
-            <!-- Shortcuts Grid for Incognito -->
-            <div class="shortcuts-grid">
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://google.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">search</span>
-                        </div>
-                        <div class="shortcut-title">Google</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://duckduckgo.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">security</span>
-                        </div>
-                        <div class="shortcut-title">DuckDuckGo</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://protonmail.com')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">email</span>
-                        </div>
-                        <div class="shortcut-title">ProtonMail</div>
-                    </a>
-                </div>
-                
-                <div class="mdc-card">
-                    <a href="#" class="shortcut-content" onclick="navigateToSite('https://signal.org')">
-                        <div class="shortcut-icon">
-                            <span class="material-icons">chat</span>
-                        </div>
-                        <div class="shortcut-title">Signal</div>
-                    </a>
+                <!-- Recent Section -->
+                <div class="recent-section">
+                    <h2 class="section-title">Recently visited</h2>
+                    
+                    <ul class="mdc-list">
+                        <li class="mdc-list-item" onclick="navigateToSite('https://docs.microsoft.com/dotnet')">
+                            <div class="site-favicon">
+                                <span class="material-icons" style="font-size: 14px;">description</span>
+                            </div>
+                            <div>
+                                <div class="site-title">.NET Documentation</div>
+                                <div class="site-url">docs.microsoft.com</div>
+                            </div>
+                        </li>
+                        
+                        <li class="mdc-list-item" onclick="navigateToSite('https://github.com')">
+                            <div class="site-favicon">
+                                <span class="material-icons" style="font-size: 14px;">code</span>
+                            </div>
+                            <div>
+                                <div class="site-title">My project</div>
+                                <div class="site-url">github.com</div>
+                            </div>
+                        </li>
+                        
+                        <li class="mdc-list-item" onclick="navigateToSite('https://stackoverflow.com/questions/tagged/c%23')">
+                            <div class="site-favicon">
+                                <span class="material-icons" style="font-size: 14px;">help</span>
+                            </div>
+                            <div>
+                                <div class="site-title">C# Questions</div>
+                                <div class="site-url">stackoverflow.com</div>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
 
-        <!-- Search Page -->
-        <div class="search-page" id="searchPage">
-            <div class="search-message">Type in the address bar to start searching</div>
-        </div>
+            <!-- Incognito Home Content -->
+            <div class="incognito-home" id="incognitoHome">
+                <div class="incognito-icon">
+                    <span class="material-icons" style="font-size: inherit;">visibility_off</span>
+                </div>
+                <h2 class="incognito-title">You're incognito</h2>
+                <p class="incognito-description">
+                    Pearl won't save your browsing history, cookies, site data, or information entered in forms. Downloaded files and bookmarks will be saved.
+                </p>
+                
+                <!-- Shortcuts Grid for Incognito -->
+                <div class="shortcuts-grid">
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://google.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">search</span>
+                            </div>
+                            <div class="shortcut-title">Google</div>
+                        </a>
+                    </div>
+                    
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://duckduckgo.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">security</span>
+                            </div>
+                            <div class="shortcut-title">DuckDuckGo</div>
+                        </a>
+                    </div>
+                    
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://protonmail.com')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">email</span>
+                            </div>
+                            <div class="shortcut-title">ProtonMail</div>
+                        </a>
+                    </div>
+                    
+                    <div class="mdc-card">
+                        <a class="shortcut-content" onclick="navigateToSite('https://signal.org')">
+                            <div class="shortcut-icon">
+                                <span class="material-icons">chat</span>
+                            </div>
+                            <div class="shortcut-title">Signal</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Browser View -->
-        <div class="browser-view" id="browserView">
-            <iframe class="browser-iframe" id="browserIframe" src="about:blank"></iframe>
+            <!-- Search Page -->
+            <div class="search-page" id="searchPage">
+                <div class="search-message">Type in the address bar to start searching</div>
+            </div>
+
+            <!-- Browser View -->
+            <div class="browser-view" id="browserView">
+                <iframe class="browser-iframe" id="browserIframe" src="about:blank"></iframe>
+            </div>
         </div>
     </div>
+
+    <!-- Fake Tabs will be inserted here dynamically -->
 
     <!-- Tabs Screen -->
     <div class="tabs-screen" id="tabsScreen">
@@ -1155,43 +1511,43 @@
             </button>
         </div>
         <div class="menu-content">
-            <a href="#" class="menu-item" onclick="addNewTab(); closeMenu();">
+            <a class="menu-item" onclick="addNewTab(); closeMenu();">
                 <span class="material-icons">add</span>
                 <span>New tab</span>
             </a>
-            <a href="#" class="menu-item" onclick="addNewIncognitoTab(); closeMenu();">
+            <a class="menu-item" onclick="addNewIncognitoTab(); closeMenu();">
                 <span class="material-icons">visibility_off</span>
                 <span>New incognito tab</span>
             </a>
-            <a href="#" class="menu-item" onclick="showBookmarks(); closeMenu();">
+            <a class="menu-item" onclick="showBookmarks(); closeMenu();">
                 <span class="material-icons">bookmark</span>
                 <span>Bookmarks</span>
             </a>
-            <a href="#" class="menu-item" onclick="showHistory(); closeMenu();">
+            <a class="menu-item" onclick="showHistory(); closeMenu();">
                 <span class="material-icons">history</span>
                 <span>History</span>
             </a>
-            <a href="#" class="menu-item" onclick="showDownloads(); closeMenu();">
+            <a class="menu-item" onclick="showDownloads(); closeMenu();">
                 <span class="material-icons">download</span>
                 <span>Downloads</span>
             </a>
-            <a href="./wallet.html" class="menu-item">
+            <a class="menu-item" onclick="openWalletTab('Pearl wallet'); closeMenu();">
                 <span class="material-icons">wallet</span>
                 <span>Wallet</span>
             </a>
-            <a href="#" class="menu-item">
+            <a class="menu-item" onclick="openDappsTab(); closeMenu();">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgba(255, 255, 255, 0.7)"><path d="M120-120v-200h160l160-160v-128q-36-13-58-43.5T360-720q0-50 35-85t85-35q50 0 85 35t35 85q0 38-22 68.5T520-608v128l160 160h160v200H640v-122L480-402 320-242v122H120Z"/></svg>
                 <span>Dapps Menu</span>
             </a>
-            <a href="#" class="menu-item">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgba(255, 255, 255, 0.7)"><path d="M480-40q-50 0-85-35t-35-85q0-14 2.5-26.5T371-211L211-372q-12 5-25 8.5t-27 3.5q-50 0-84.5-35T40-480q0-50 34.5-85t84.5-35q39 0 70 22.5t43 57.5h95q9-26 28-44.5t45-27.5v-95q-35-12-57.5-43T360-800q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l160 160q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35q-39 0-70-22.5T687-440h-95q-9 26-27.5 45T520-367v94q35 12 57.5 43t22.5 70q0 50-35 85t-85 35Zm-40-233v-94q-13-5-24-12t-20.5-16.5Q386-405 379-416t-12-24h-95q0 1-.5 2.5l-1 3q-.5 1.5-1 2.5l-1.5 3 29 29q24 24 51 51.5t51 51.5l29 29q2-1 3.5-1.5t3-1.5 3-1.5q1.5-.5 2.5-.5Zm152-247h95q0-2 .5-3.5t1.5-3 1.5-3q.5-1.5 1.5-2.5l-29-29-51-51-51-51-29-29q-1 1-2.5 1.5t-3 1.5-3 1.5q-1.5.5-3.5.5v95q12 4 23.5 11.5T564-564q9 9 16.5 20.5T592-520Zm208 80q17 0 28.5-11.5T840-480q0-17-11.5-28.5T800-520q-17 0-28.5 11.5T760-480q0 17 11.5 28.5T800-440Zm-320 0q17 0 28.5-11.5T520-480q0-17-11.5-28.5T480-520q-17 0-28.5 11.5T440-480q0 17 11.5 28.5T480-440Zm0 320q17 0 28.5-11.5T520-160q0-17-11.5-28.5T480-200q-17 0-28.5 11.5T440-160q0 17 11.5 28.5T480-120ZM160-440q17 0 28.5-11.5T200-480q0-17-11.5-28.5T160-520q-17 0-28.5 11.5T120-480q0 17 11.5 28.5T160-440Zm320-320q17 0 28.5-11.5T520-800q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800q0 17 11.5 28.5T480-760Z"/></svg>
+            <a class="menu-item" onclick="openAiTab(); closeMenu();">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgba(255, 255, 255, 0.7)"><path d="M480-40q-50 0-85-35t-35-85q0-14 2.5-26.5T371-211L211-372q-12 5-25 8.5t-27 3.5q-50 0-84.5-35T40-480q0-50 34.5-85t84.5-35q39 0 70 22.5t43 57.5h95q9-26 28-44.5t45-27.5v-95q-35-12-57.5-43T360-800q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l160 160q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35q-39 0-70-22.5T687-440h-95q-9 26-27.5 45T520-367v94q35 12 57.5 43t22.5 70q0 50-35 85t-85 35Z"/></svg>
                 <span>AI Menu</span>
             </a>
-            <a href="#" class="menu-item">
+            <a class="menu-item">
                 <span class="material-icons">qr_code</span>
                 <span>QR Code</span>
             </a>
-            <a href="#" class="menu-item" onclick="showSettings(); closeMenu();">
+            <a class="menu-item" onclick="showSettings(); closeMenu();">
                 <span class="material-icons">settings</span>
                 <span>Settings</span>
             </a>
@@ -1231,6 +1587,10 @@
         let currentView = 'home'; // 'home', 'search', 'browser'
         let currentTabsMode = 'single'; // 'single', 'groups'
         let isIncognitoMode = false;
+        
+        // Fake tabs management
+        let fakeTabs = [];
+        let nextFakeTabId = 1;
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
@@ -1253,6 +1613,533 @@
             });
         });
 
+        // Wallet dropdown functionality
+        function toggleWalletDropdown() {
+            const dropdown = document.getElementById('walletDropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        // Close wallet dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('walletDropdown');
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
+
+        // Fake tabs system
+        function createFakeTab(type, title, data = {}) {
+            const existingTab = fakeTabs.find(tab => tab.type === type && tab.title === title);
+            if (existingTab) {
+                switchToFakeTab(existingTab.id);
+                return;
+            }
+
+            const fakeTab = {
+                id: nextFakeTabId++,
+                type: type,
+                title: title,
+                data: data
+            };
+
+            fakeTabs.push(fakeTab);
+            createFakeTabElement(fakeTab);
+            switchToFakeTab(fakeTab.id);
+        }
+
+        function createFakeTabElement(fakeTab) {
+            const tabElement = document.createElement('div');
+            tabElement.className = 'fake-tab';
+            tabElement.id = `fake-tab-${fakeTab.id}`;
+            
+            let content = '';
+            
+            if (fakeTab.type === 'wallet') {
+                content = createWalletContent(fakeTab);
+            } else if (fakeTab.type === 'dapps') {
+                content = createDappsContent(fakeTab);
+            } else if (fakeTab.type === 'ai') {
+                content = createAiContent(fakeTab);
+            }
+            
+            tabElement.innerHTML = content;
+            document.getElementById('tabsContainer').appendChild(tabElement);
+            
+            // Add event listeners for sidebar toggle if needed
+            if (fakeTab.type === 'dapps' || fakeTab.type === 'ai') {
+                // Add sidebar link event listeners
+                const sidebarLinks = tabElement.querySelectorAll('.sidebar-link');
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const category = link.dataset.category;
+                        if (category) {
+                            switchCategory(fakeTab.id, category);
+                            closeSidebar(fakeTab.id);
+                        }
+                    });
+                });
+            }
+        }
+
+        function createWalletContent(fakeTab) {
+            return `
+                <div class="tab-header">
+                    <div class="tab-title">
+                        <span class="material-icons">wallet</span>
+                        ${fakeTab.title}
+                    </div>
+                    <button class="tab-close" onclick="closeFakeTab(${fakeTab.id})">×</button>
+                </div>
+                <div class="tab-content">
+                    <div class="main-content">
+                        <iframe src="data:text/html;charset=utf-8,${encodeURIComponent(getWalletHTML())}" 
+                                style="width: 100%; height: 100%; border: none;"></iframe>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createDappsContent(fakeTab) {
+            return `
+                <div class="tab-header">
+                    <div class="tab-title">
+                        <button class="sidebar-toggle" onclick="toggleSidebar(${fakeTab.id})">
+                            <span class="material-icons">menu</span>
+                        </button>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="white"><path d="M120-120v-200h160l160-160v-128q-36-13-58-43.5T360-720q0-50 35-85t85-35q50 0 85 35t35 85q0 38-22 68.5T520-608v128l160 160h160v200H640v-122L480-402 320-242v122H120Z"/></svg>
+                        Dapps Menu
+                    </div>
+                    <button class="tab-close" onclick="closeFakeTab(${fakeTab.id})">×</button>
+                </div>
+                <div class="tab-content">
+                    <div class="sidebar-overlay" id="sidebar-overlay-${fakeTab.id}" onclick="closeSidebar(${fakeTab.id})"></div>
+                    <div class="sidebar" id="dapps-sidebar-${fakeTab.id}">
+                        <button class="sidebar-close" onclick="closeSidebar(${fakeTab.id})">×</button>
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link active" data-category="chains">
+                                    <span class="sidebar-icon">⛓️</span>
+                                    <span class="sidebar-text">Chains</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="all-categories">
+                                    <span class="sidebar-icon">📂</span>
+                                    <span class="sidebar-text">All Categories</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="defi">
+                                    <span class="sidebar-icon">💰</span>
+                                    <span class="sidebar-text">DeFi</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="nfts">
+                                    <span class="sidebar-icon">🖼️</span>
+                                    <span class="sidebar-text">NFTs</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="games">
+                                    <span class="sidebar-icon">🎮</span>
+                                    <span class="sidebar-text">Games</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="social">
+                                    <span class="sidebar-icon">👥</span>
+                                    <span class="sidebar-text">Social</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="main-content">
+                        <div class="content-header">
+                            <h2 style="margin-bottom: 16px; color: #333;">Chains</h2>
+                            <div class="search-container">
+                                <span class="material-icons search-icon">search</span>
+                                <input type="text" class="search-input" placeholder="Search tool">
+                            </div>
+                        </div>
+                        <table class="content-table" id="dapps-table-${fakeTab.id}">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Logo</th>
+                                    <th>Name</th>
+                                    <th>Link</th>
+                                    <th>Info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${getDappsTableContent('chains')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createAiContent(fakeTab) {
+            return `
+                <div class="tab-header">
+                    <div class="tab-title">
+                        <button class="sidebar-toggle" onclick="toggleSidebar(${fakeTab.id})">
+                            <span class="material-icons">menu</span>
+                        </button>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="white"><path d="M480-40q-50 0-85-35t-35-85q0-14 2.5-26.5T371-211L211-372q-12 5-25 8.5t-27 3.5q-50 0-84.5-35T40-480q0-50 34.5-85t84.5-35q39 0 70 22.5t43 57.5h95q9-26 28-44.5t45-27.5v-95q-35-12-57.5-43T360-800q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l160 160q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35q-39 0-70-22.5T687-440h-95q-9 26-27.5 45T520-367v94q35 12 57.5 43t22.5 70q0 50-35 85t-85 35Z"/></svg>
+                        AI Menu
+                    </div>
+                    <button class="tab-close" onclick="closeFakeTab(${fakeTab.id})">×</button>
+                </div>
+                <div class="tab-content">
+                    <div class="sidebar-overlay" id="sidebar-overlay-${fakeTab.id}" onclick="closeSidebar(${fakeTab.id})"></div>
+                    <div class="sidebar" id="ai-sidebar-${fakeTab.id}">
+                        <button class="sidebar-close" onclick="closeSidebar(${fakeTab.id})">×</button>
+                        <ul class="sidebar-menu">
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link active" data-category="all-categories">
+                                    <span class="sidebar-icon">📂</span>
+                                    <span class="sidebar-text">All Categories</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="chatbots">
+                                    <span class="sidebar-icon">💬</span>
+                                    <span class="sidebar-text">Chatbots</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="coding">
+                                    <span class="sidebar-icon">⌨️</span>
+                                    <span class="sidebar-text">Coding</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="customer-service">
+                                    <span class="sidebar-icon">🎧</span>
+                                    <span class="sidebar-text">Customer Service</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="content-generators">
+                                    <span class="sidebar-icon">✍️</span>
+                                    <span class="sidebar-text">Content Generators</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="image-generators">
+                                    <span class="sidebar-icon">🎨</span>
+                                    <span class="sidebar-text">Image Generators</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="sound-generators">
+                                    <span class="sidebar-icon">🎵</span>
+                                    <span class="sidebar-text">Sound Generators</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="data-management">
+                                    <span class="sidebar-icon">📊</span>
+                                    <span class="sidebar-text">Data Management</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="seo">
+                                    <span class="sidebar-icon">🔍</span>
+                                    <span class="sidebar-text">SEO</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="web3">
+                                    <span class="sidebar-icon">🌐</span>
+                                    <span class="sidebar-text">Web3</span>
+                                </a>
+                            </li>
+                            <li class="sidebar-item">
+                                <a href="#" class="sidebar-link" data-category="libraries">
+                                    <span class="sidebar-icon">📚</span>
+                                    <span class="sidebar-text">AI Open Source Libraries</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="main-content">
+                        <div class="content-header">
+                            <h2 style="margin-bottom: 16px; color: #333;">All Categories</h2>
+                            <div class="search-container">
+                                <span class="material-icons search-icon">search</span>
+                                <input type="text" class="search-input" placeholder="Search tool">
+                            </div>
+                        </div>
+                        <table class="content-table" id="ai-table-${fakeTab.id}">
+                            <thead>
+                                <tr>
+                                    <th>No.</th>
+                                    <th>Logo</th>
+                                    <th>Name</th>
+                                    <th>Link</th>
+                                    <th>Info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${getAiTableContent('all-categories')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        function getDappsTableContent(category) {
+            const dappsData = {
+                'chains': [
+                    { name: 'Lido', logo: '🌊', link: 'lido.fi' },
+                    { name: 'Banana Gun', logo: '🍌', link: 'banana.gun' },
+                    { name: 'EigenLayer', logo: '⚡', link: 'eigenlayer.xyz' }
+                ],
+                'defi': [
+                    { name: 'Aave V1', logo: '👻', link: 'aave.com' },
+                    { name: 'Maker DAO', logo: 'Ⓜ️', link: 'makerdao.com' },
+                    { name: 'UniSwap V3', logo: '🦄', link: 'uniswap.org' }
+                ],
+                'nfts': [
+                    { name: '1inch Network', logo: '🔗', link: '1inch.io' },
+                    { name: 'Magic Eden', logo: '✨', link: 'magiceden.io' },
+                    { name: 'OpenSea', logo: '🌊', link: 'opensea.io' }
+                ]
+            };
+
+            const data = dappsData[category] || dappsData['chains'];
+            return data.map((item, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="table-logo">${item.logo}</div>
+                    </td>
+                    <td>${item.name}</td>
+                    <td>
+                        <a onclick="navigateToSite('https://${item.link}')" class="table-link">
+                            <span class="material-icons">open_in_new</span>
+                        </a>
+                    </td>
+                    <td>
+                        <button class="info-button">ⓘ</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getAiTableContent(category) {
+            const aiData = {
+                'all-categories': [
+                    { name: 'TensorFlow', logo: '🧠', link: 'tensorflow.org' },
+                    { name: 'PyTorch', logo: '🔥', link: 'pytorch.org' },
+                    { name: 'Scikit-learn', logo: '📊', link: 'scikit-learn.org' }
+                ],
+                'chatbots': [
+                    { name: 'Keras', logo: '🤖', link: 'keras.io' },
+                    { name: 'OpenNN', logo: '🧮', link: 'opennn.net' },
+                    { name: 'CNTK', logo: '🔗', link: 'cntk.ai' }
+                ],
+                'coding': [
+                    { name: 'OpenAI', logo: '🤯', link: 'openai.com' },
+                    { name: 'PyBrain', logo: '🧠', link: 'pybrain.org' },
+                    { name: 'Caffe', logo: '☕', link: 'caffe.berkeleyvision.org' }
+                ]
+            };
+
+            const data = aiData[category] || aiData['all-categories'];
+            return data.map((item, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>
+                        <div class="table-logo">${item.logo}</div>
+                    </td>
+                    <td>${item.name}</td>
+                    <td>
+                        <a onclick="navigateToSite('https://${item.link}')" class="table-link">
+                            <span class="material-icons">open_in_new</span>
+                        </a>
+                    </td>
+                    <td>
+                        <button class="info-button">ⓘ</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function toggleSidebar(tabId) {
+            const sidebar = document.querySelector(`#fake-tab-${tabId} .sidebar`);
+            const overlay = document.querySelector(`#fake-tab-${tabId} .sidebar-overlay`);
+            if (sidebar && overlay) {
+                sidebar.classList.add('open');
+                overlay.classList.add('open');
+            }
+        }
+
+        function closeSidebar(tabId) {
+            const sidebar = document.querySelector(`#fake-tab-${tabId} .sidebar`);
+            const overlay = document.querySelector(`#fake-tab-${tabId} .sidebar-overlay`);
+            if (sidebar && overlay) {
+                sidebar.classList.remove('open');
+                overlay.classList.remove('open');
+            }
+        }
+
+        function switchCategory(tabId, category) {
+            const fakeTab = fakeTabs.find(tab => tab.id === tabId);
+            if (!fakeTab) return;
+
+            const tabElement = document.getElementById(`fake-tab-${tabId}`);
+            const sidebarLinks = tabElement.querySelectorAll('.sidebar-link');
+            const table = tabElement.querySelector('.content-table tbody');
+            const header = tabElement.querySelector('.content-header h2');
+
+            // Update active sidebar link
+            sidebarLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.category === category) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Update table content
+            if (fakeTab.type === 'dapps') {
+                table.innerHTML = getDappsTableContent(category);
+                header.textContent = category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ');
+            } else if (fakeTab.type === 'ai') {
+                table.innerHTML = getAiTableContent(category);
+                header.textContent = category.charAt(0).toUpperCase() + category.slice(1).replace('-', ' ');
+            }
+        }
+
+        function switchToFakeTab(tabId) {
+            // Hide all fake tabs
+            document.querySelectorAll('.fake-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Hide main content
+            document.getElementById('homeContent').classList.add('hidden');
+            document.getElementById('incognitoHome').classList.remove('active');
+            document.getElementById('searchPage').classList.remove('active');
+            document.getElementById('browserView').classList.remove('active');
+
+            // Show selected fake tab
+            const selectedTab = document.getElementById(`fake-tab-${tabId}`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+
+            currentView = 'fake-tab';
+        }
+
+        function closeFakeTab(tabId) {
+            const tabElement = document.getElementById(`fake-tab-${tabId}`);
+            if (tabElement) {
+                tabElement.classList.add('closing');
+                setTimeout(() => {
+                    tabElement.remove();
+                    fakeTabs = fakeTabs.filter(tab => tab.id !== tabId);
+                    
+                    // If this was the active tab, show home
+                    if (currentView === 'fake-tab') {
+                        showHome();
+                    }
+                }, 300);
+            }
+        }
+
+        // Tab creation functions
+        function openWalletTab(walletName) {
+            createFakeTab('wallet', walletName);
+            toggleWalletDropdown();
+        }
+
+        function openDappsTab() {
+            createFakeTab('dapps', 'Dapps Menu');
+        }
+
+        function openAiTab() {
+            createFakeTab('ai', 'AI Menu');
+        }
+
+        // Get wallet HTML content
+        function getWalletHTML() {
+            return `<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi Currency Wallet</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: #333; }
+        .container { max-width: 500px; margin: 0 auto; background: white; min-height: 100vh; position: relative; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; color: white; text-align: center; }
+        .header h1 { font-size: 24px; margin-bottom: 10px; }
+        .wallet-type { background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 20px; display: inline-block; font-size: 14px; }
+        .total-assets { text-align: center; padding: 30px 20px; background: #f8f9fa; }
+        .total-amount { font-size: 36px; font-weight: bold; color: #333; margin-bottom: 5px; }
+        .total-label { color: #666; font-size: 14px; }
+        .accounts-list { padding: 0 20px; }
+        .account-item { display: flex; align-items: center; padding: 16px 0; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s; }
+        .account-item:hover { background: #f8f9fa; }
+        .crypto-icon { width: 32px; height: 32px; border-radius: 50%; margin-right: 12px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px; }
+        .crypto-icon.btc { background: #f7931a; }
+        .crypto-icon.sol { background: #9945ff; }
+        .crypto-icon.eth { background: #627eea; }
+        .crypto-icon.bnb { background: #f3ba2f; }
+        .crypto-icon.avax { background: #e84142; }
+        .account-info { flex: 1; }
+        .account-name { font-weight: 600; margin-bottom: 2px; }
+        .account-balance { color: #666; font-size: 14px; }
+    <\/style>
+<\/head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Multi Currency Wallet</h1>
+            <div class="wallet-type">Pearl wallet</div>
+        </div>
+        <div class="total-assets">
+            <div class="total-amount">215.35 USD</div>
+            <div class="total-label">Total assets</div>
+        </div>
+        <div class="accounts-list">
+            <div class="account-item">
+                <div class="crypto-icon btc">₿</div>
+                <div class="account-info">
+                    <div class="account-name">Account 1</div>
+                    <div class="account-balance">1.65 mBTC</div>
+                </div>
+            </div>
+            <div class="account-item">
+                <div class="crypto-icon sol">◎</div>
+                <div class="account-info">
+                    <div class="account-name">Account 1</div>
+                    <div class="account-balance">14.51 mSOL</div>
+                </div>
+            </div>
+            <div class="account-item">
+                <div class="crypto-icon eth">Ξ</div>
+                <div class="account-info">
+                    <div class="account-name">Account 1</div>
+                    <div class="account-balance">16.91 mETH</div>
+                </div>
+            </div>
+        </div>
+    </div>
+<\/body>
+<\/html>`;
+        }
+
         // Navigation functions
         function navigateToUrl(url) {
             if (!url.startsWith('http://') && !url.startsWith('https://')) {
@@ -1272,9 +2159,9 @@
         }
 
         function navigateToSite(url) {
-            const bookmarsModal = document.getElementById('bookmarksModal');
-            if (bookmarsModal && bookmarsModal?.classList.contains('open')) {
-                bookmarsModal.classList.remove('open');
+            const bookmarksModal = document.getElementById('bookmarksModal');
+            if (bookmarksModal && bookmarksModal?.classList.contains('open')) {
+                bookmarksModal.classList.remove('open');
             }
             document.getElementById('addressBar').value = url;
             navigateToUrl(url);
@@ -1294,6 +2181,12 @@
         // View management
         function showHome() {
             currentView = 'home';
+            
+            // Hide all fake tabs
+            document.querySelectorAll('.fake-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
             const currentTab = tabs.find(tab => tab.id === currentTabId);
             
             if (currentTab && currentTab.isIncognito) {
@@ -1314,6 +2207,12 @@
 
         function showSearch() {
             currentView = 'search';
+            
+            // Hide all fake tabs
+            document.querySelectorAll('.fake-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
             document.getElementById('homeContent').classList.add('hidden');
             document.getElementById('incognitoHome').classList.remove('active');
             document.getElementById('searchPage').classList.add('active');
@@ -1323,6 +2222,12 @@
 
         function showBrowser(url) {
             currentView = 'browser';
+            
+            // Hide all fake tabs
+            document.querySelectorAll('.fake-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
             document.getElementById('homeContent').classList.add('hidden');
             document.getElementById('incognitoHome').classList.remove('active');
             document.getElementById('searchPage').classList.remove('active');
@@ -1520,10 +2425,6 @@
 
         function showDownloads() {
             alert('Downloads page - To be implemented');
-        }
-
-        function showWallet() {
-            alert('Pearl Wallet - To be implemented');
         }
 
         function showSettings() {
