@@ -1918,7 +1918,7 @@
                     </td>
                     <td>${item.name}</td>
                     <td>
-                        <a onclick="navigateToSite('https://${item.link}')" class="table-link">
+                        <a onclick="event.stopPropagation(); navigateToSite('https://${item.link}')" class="table-link">
                             <span class="material-icons">open_in_new</span>
                         </a>
                     </td>
@@ -1957,7 +1957,7 @@
                     </td>
                     <td>${item.name}</td>
                     <td>
-                        <a onclick="navigateToSite('https://${item.link}')" class="table-link">
+                        <a onclick="event.stopPropagation(); navigateToSite('https://${item.link}')" class="table-link">
                             <span class="material-icons">open_in_new</span>
                         </a>
                     </td>
@@ -2082,11 +2082,22 @@
             updateCurrentTab(url);
         }
 
-        function navigateToSite(url) {
+        function navigateToSite(url) {            
             const bookmarksModal = document.getElementById('bookmarksModal');
             if (bookmarksModal && bookmarksModal?.classList.contains('open')) {
                 bookmarksModal.classList.remove('open');
             }
+            
+            document.querySelectorAll('.sidebar').forEach(sidebar => {
+                sidebar.style.display = 'none';
+                sidebar.classList.remove('open');
+            });
+            
+            document.querySelectorAll('.sidebar-overlay').forEach(overlay => {
+                overlay.style.display = 'none';
+                overlay.classList.remove('open');
+            });
+            
             document.getElementById('addressBar').value = url;
             navigateToUrl(url);
         }
