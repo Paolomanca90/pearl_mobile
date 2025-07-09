@@ -1151,6 +1151,74 @@
             font-weight: 500;
         }
 
+        /* History specific styles */
+        .history-date {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            padding: 16px 16px 8px;
+            border-bottom: 1px solid var(--md-sys-color-outline);
+            margin-bottom: 8px;
+        }
+
+        /* Downloads specific styles */
+        .download-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            margin-bottom: 8px;
+            background: var(--md-sys-color-surface-variant);
+            border-radius: 12px;
+            border: 1px solid var(--md-sys-color-outline);
+        }
+
+        .download-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--md-sys-color-primary-container);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .download-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .download-name {
+            font-size: 14px;
+            color: white;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .download-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .download-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 8px;
+        }
+
+        .download-progress-bar {
+            height: 100%;
+            background: var(--md-sys-color-primary);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
         /* Responsive */
         @media (max-width: 380px) {
             .shortcuts-grid {
@@ -1539,7 +1607,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="rgba(255, 255, 255, 0.7)"><path d="M480-40q-50 0-85-35t-35-85q0-14 2.5-26.5T371-211L211-372q-12 5-25 8.5t-27 3.5q-50 0-84.5-35T40-480q0-50 34.5-85t84.5-35q39 0 70 22.5t43 57.5h95q9-26 28-44.5t45-27.5v-95q-35-12-57.5-43T360-800q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l160 160q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35q-39 0-70-22.5T687-440h-95q-9 26-27.5 45T520-367v94q35 12 57.5 43t22.5 70q0 50-35 85t-85 35Z"/></svg>
                 <span>AI Menu</span>
             </a>
-            <a class="menu-item">
+            <a class="menu-item" onclick="showQrScanOverlay(); closeMenu();">
                 <span class="material-icons">qr_code</span>
                 <span>QR Code</span>
             </a>
@@ -1571,7 +1639,129 @@
         </div>
     </div>
 
+    <div id="qrScanOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:9999; background:rgba(60,60,60,0.6);">
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;">
+            <svg width="100%" height="100%">
+                <defs>
+                    <mask id="qr-scan-mask">
+                        <rect x="0" y="0" width="100%" height="100%" fill="white"/>
+                        <rect x="50%" y="50%" width="240" height="240" fill="black" transform="translate(-120,-120)"/>
+                    </mask>
+                </defs>
+                <rect x="0" y="0" width="100%" height="100%" fill="black" fill-opacity="0.7" mask="url(#qr-scan-mask)"/>
+                <rect x="50%" y="50%" width="240" height="240" fill="none" stroke="#fff" stroke-width="4" rx="24" transform="translate(-120,-120)"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Downloads Modal -->
+    <div class="bookmarks-modal" id="downloadsModal">
+        <div class="bookmarks-header">
+            <div class="bookmarks-title">Downloads</div>
+            <button class="mdc-icon-button" onclick="closeDownloads()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="bookmarks-content">
+            <div style="text-align: center; padding: 40px 20px;">
+                <span class="material-icons" style="font-size: 48px; color: rgba(255, 255, 255, 0.5);">download</span>
+                <h3 style="color: white; margin: 16px 0 8px;">Your downloads will appear here</h3>
+                <p style="color: rgba(255, 255, 255, 0.6); font-size: 14px; margin-bottom: 24px;">
+                    You can save images and files to view offline or share with other apps
+                </p>
+                <div style="background: rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                        <span style="color: white; font-size: 14px;">Using 0.00 KB</span>
+                        <span style="color: rgba(255, 255, 255, 0.6); font-size: 12px;">of 221.81 GB</span>
+                    </div>
+                    <div style="height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px;">
+                        <div style="width: 0%; height: 100%; background: var(--md-sys-color-primary); border-radius: 2px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Modal -->
+    <div class="bookmarks-modal" id="historyModal">
+        <div class="bookmarks-header">
+            <div class="bookmarks-title">History</div>
+            <div>
+                <button class="mdc-icon-button" style="margin-right: 8px;" onclick="clearHistory()">
+                    <span class="material-icons">delete</span>
+                </button>
+                <button class="mdc-icon-button" onclick="closeHistory()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+        </div>
+        <div class="bookmarks-content">
+            <div style="padding: 8px 16px; color: rgba(255, 255, 255, 0.7); font-size: 14px;">
+                You can see the history of other apps that open links in Pearl.
+            </div>
+            <button class="mdc-list-item" style="justify-content: center; color: var(--md-sys-color-primary);">
+                <span class="material-icons" style="margin-right: 8px;">delete</span>
+                Clear browsing data...
+            </button>
+            
+            <!-- History items will be added here dynamically -->
+            <div id="historyItemsContainer">
+                <div class="history-date">July 2, 2025</div>
+                <div class="bookmark-item" onclick="navigateToSite('https://www.wikipedia.org')">
+                    <div class="bookmark-favicon">W</div>
+                    <div class="bookmark-info">
+                        <div class="bookmark-title">Wikipedia</div>
+                        <div class="bookmark-url">www.wikipedia.org</div>
+                    </div>
+                </div>
+                
+                <div class="history-date">June 3, 2025</div>
+                <div class="bookmark-item" onclick="navigateToSite('https://www.wikipedia.org')">
+                    <div class="bookmark-favicon">W</div>
+                    <div class="bookmark-info">
+                        <div class="bookmark-title">Wikipedia</div>
+                        <div class="bookmark-url">www.wikipedia.org</div>
+                    </div>
+                </div>
+                
+                <div class="bookmark-item" onclick="navigateToSite('https://www.google.com/search?q=ethereum')">
+                    <div class="bookmark-favicon">G</div>
+                    <div class="bookmark-info">
+                        <div class="bookmark-title">ethereum - Google Search</div>
+                        <div class="bookmark-url">www.google.com</div>
+                    </div>
+                </div>
+                
+                <div class="bookmark-item" onclick="navigateToSite('https://www.google.com/search?q=bitcoin')">
+                    <div class="bookmark-favicon">G</div>
+                    <div class="bookmark-info">
+                        <div class="bookmark-title">bitcoin - Google Search</div>
+                        <div class="bookmark-url">www.google.com</div>
+                    </div>
+                </div>
+                
+                <div class="bookmark-item" onclick="navigateToSite('https://www.instagram.com/meg.goes.mobil...')">
+                    <div class="bookmark-favicon">1</div>
+                    <div class="bookmark-info">
+                        <div class="bookmark-title">Megan Mullally (@meg.goes.mobil...)</div>
+                        <div class="bookmark-url">www.instagram.com</div>
+                    </div>
+                </div>
+                
+                <div class="bookmark-item" onclick="navigateToSite('https://support.brave.com')">
+                    <div class="bookmark-favicon">?</div>
+                    <div class="bookmark-info">
+                        <div class="bookmark-title">What is P3A in Pearl? - Pearl Help...</div>
+                        <div class="bookmark-url">support.brave.com</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/14.0.0/material-components-web.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         let tabs = [
             { id: 1, title: 'Pearl Browser - Home', url: 'pearl://home', favicon: 'home', isIncognito: false },
@@ -2354,14 +2544,6 @@
             document.getElementById('menuOverlay').classList.remove('open');
         }
 
-        function showHistory() {
-            alert('History page - To be implemented');
-        }
-
-        function showDownloads() {
-            alert('Downloads page - To be implemented');
-        }
-
         function showSettings() {
             alert('Settings - To be implemented');
         }
@@ -2382,6 +2564,8 @@
             const tabsScreen = document.getElementById('tabsScreen');
             const menuOverlay = document.getElementById('menuOverlay');
             const bookmarksModal = document.getElementById('bookmarksModal');
+            const downloadsModal = document.getElementById('downloadsModal');
+            const historyModal = document.getElementById('historyModal');
             
             // Close tabs screen if clicking outside
             if (tabsScreen.classList.contains('open') && 
@@ -2403,7 +2587,103 @@
                 !document.getElementById('bookmarksNav').contains(e.target)) {
                 closeBookmarks();
             }
+            
+            // Close downloads if clicking outside
+            if (downloadsModal.classList.contains('open') && 
+                !downloadsModal.contains(e.target)) {
+                closeDownloads();
+            }
+            
+            // Close history if clicking outside
+            if (historyModal.classList.contains('open') && 
+                !historyModal.contains(e.target)) {
+                closeHistory();
+            }
         });
+
+        function showQrScanOverlay() {
+            const overlay = document.getElementById('qrScanOverlay');
+            overlay.style.display = 'block';
+
+            setTimeout(() => {
+                let found = false;
+                document.querySelectorAll('img').forEach(img => {
+                    if ((img.alt && img.alt.toLowerCase().includes('qr')) ||
+                        (img.src && img.src.toLowerCase().includes('qr'))) {
+                        found = true;
+                    }
+                });
+
+                overlay.style.display = 'none';
+
+                if (found) {
+                    // Qui puoi aggiungere la logica per "trovato" (es: highlight, alert, ecc.)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'QR code found!',
+                        text: 'A QR code was detected on this page.'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No QR code found',
+                        text: 'No QR code found on this page.'
+                    });
+                }
+            }, 3000); // Durata simulazione scansione
+        }
+
+        // Downloads functions
+        function showDownloads() {
+            const downloadsModal = document.getElementById('downloadsModal');
+            downloadsModal.classList.add('open');
+        }
+
+        function closeDownloads() {
+            document.getElementById('downloadsModal').classList.remove('open');
+        }
+
+        // History functions
+        function showHistory() {
+            const historyModal = document.getElementById('historyModal');
+            historyModal.classList.add('open');
+        }
+
+        function closeHistory() {
+            document.getElementById('historyModal').classList.remove('open');
+        }
+
+        function clearHistory() {
+            Swal.fire({
+                title: 'Clear browsing data?',
+                text: "This will remove your browsing history, cookies, and other site data. This action cannot be undone.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#9333ea',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Clear data',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Clear the history items
+                    document.getElementById('historyItemsContainer').innerHTML = `
+                        <div style="text-align: center; padding: 40px 20px;">
+                            <span class="material-icons" style="font-size: 48px; color: rgba(255, 255, 255, 0.5);">history</span>
+                            <h3 style="color: white; margin: 16px 0 8px;">No browsing history</h3>
+                            <p style="color: rgba(255, 255, 255, 0.6); font-size: 14px;">
+                                Pages you visit will appear here
+                            </p>
+                        </div>
+                    `;
+                    
+                    Swal.fire(
+                        'Cleared!',
+                        'Your browsing data has been cleared.',
+                        'success'
+                    );
+                }
+            });
+        }
 
         // Handle back button in browser
         window.addEventListener('popstate', function(e) {
