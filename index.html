@@ -1237,6 +1237,443 @@
                 width: 50px;
             }
         }
+
+        /* Profile section in menu */
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .profile-section::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(135deg, var(--md-sys-color-primary), #7c3aed);
+            border-radius: 0 2px 2px 0;
+        }
+
+        .profile-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: visible;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar-icon {
+            color: white;
+            font-size: 24px;
+            display: flex;
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .profile-type {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .profile-type-icon {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Profile type badge */
+        .profile-badge {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            border: 2px solid rgba(26, 26, 26, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .profile-badge.default {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+        }
+
+        .profile-badge.work {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .profile-badge.personal {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+
+        .profile-badge.guest {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        .menu-divider {
+            /* height: 1px; */
+            /* background: rgba(255, 255, 255, 0.1); */
+            border: 1px solid rgb(73, 73, 73);
+            margin: 8px 0;
+        }
+
+        /* Profile Picture Modal Styles */
+        .profile-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 24px;
+        }
+
+        .profile-tab {
+            flex: 1;
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .profile-tab.active {
+            color: white;
+            border-bottom-color: var(--md-sys-color-primary);
+        }
+
+        .profile-tab-content {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .color-section {
+            margin-bottom: 32px;
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            place-items: center;
+        }
+
+        .color-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+        }
+
+        .color-option.selected {
+            border-color: white;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        .foreground-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            color: white;
+        }
+
+        .foreground-option:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .foreground-option.selected {
+            border-color: var(--md-sys-color-primary);
+            background: rgba(147, 51, 234, 0.2);
+        }
+
+        .preview-section {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            margin: 16px 0;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .avatar-preview::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--md-sys-color-primary), #ec4899, #f59e0b);
+            z-index: -1;
+            opacity: 0.7;
+            animation: rotate 3s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 40px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .upload-area:hover {
+            border-color: var(--md-sys-color-primary);
+            background: rgba(147, 51, 234, 0.05);
+        }
+
+        .uploaded-preview {
+            text-align: center;
+        }
+
+        /* Submit button */
+        .submit-btn {
+            width: 100%;
+            background: var(--md-sys-color-primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .submit-btn:hover {
+            background: #7c3aed;
+            transform: translateY(-1px);
+        }
+
+        /* Profile Settings Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            color: white;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .profile-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            margin-bottom: 16px;
+        }
+
+        .profile-input:focus {
+            outline: none;
+            border-color: var(--md-sys-color-primary);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .profile-input option {
+            background: #333;
+            color: white;
+        }
+
+        /* Manage Profiles Styles */
+        .profiles-list {
+            margin-bottom: 20px;
+        }
+
+        .profile-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .profile-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-item.active {
+            border-color: var(--md-sys-color-primary);
+            background: rgba(147, 51, 234, 0.1);
+        }
+
+        .profile-item-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 16px;
+        }
+
+        .profile-item-info {
+            flex: 1;
+        }
+
+        .profile-item-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .profile-item-type {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .profile-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .profile-action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .profile-action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .profile-action-btn.delete {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+        }
+
+        .profile-action-btn.delete:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        /* Stili aggiuntivi per Profile Settings */
+        .profile-settings-avatar {
+            transition: transform 0.2s ease;
+        }
+
+        .profile-settings-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        /* Stile per SweetAlert più largo */
+        .swal-wide {
+            width: 600px !important;
+        }
+
+        /* Stili per gli input del profile settings */
+        #profileName:focus,
+        #profileWallet:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+        /* Hover effects per i bottoni */
+        button[onclick="saveProfileSettings()"]:hover,
+        button[onclick="deleteCurrentProfile()"]:hover {
+            background: #9333ea !important;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -1579,6 +2016,38 @@
             </button>
         </div>
         <div class="menu-content">
+            <!-- User Profile Section -->
+            <div class="profile-section">
+                <div class="profile-avatar" id="userAvatar" onclick="changeUserAvatar()">
+                    <div class="avatar-icon">
+                        <span class="material-icons">local_hospital</span>
+                    </div>
+                    <div class="profile-badge default" title="Default Profile">
+                        <span class="material-icons">star</span>
+                    </div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-name" id="userName">Paolo</div>
+                    <div class="profile-type" id="userProfileType">
+                        <span class="material-icons profile-type-icon">person</span>
+                        Default
+                    </div>
+                </div>
+            </div>
+            
+            <div class="menu-divider"></div>
+            
+            <a class="menu-item" onclick="showProfileSettings(); closeMenu();">
+                <span class="material-icons">person</span>
+                <span>Profile Settings</span>
+            </a>
+            <a class="menu-item" onclick="showManageProfiles(); closeMenu();">
+                <span class="material-icons">manage_accounts</span>
+                <span>Manage Profiles</span>
+            </a>
+            
+            <div class="menu-divider"></div>
+
             <a class="menu-item" onclick="addNewTab(); closeMenu();">
                 <span class="material-icons">add</span>
                 <span>New tab</span>
@@ -1740,6 +2209,252 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- Profile Picture Modal -->
+    <div class="bookmarks-modal" id="profilePictureModal">
+        <div class="bookmarks-header">
+            <div class="bookmarks-title">Change profile picture</div>
+            <button class="mdc-icon-button" onclick="closeProfilePictureModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="bookmarks-content">
+            <!-- Tab Navigation -->
+            <div class="profile-tabs">
+                <button class="profile-tab active" onclick="switchProfileTab('icons')">Icons library</button>
+                <button class="profile-tab" onclick="switchProfileTab('computer')">From computer</button>
+            </div>
+            
+            <!-- Icons Library Tab -->
+            <div class="profile-tab-content" id="iconsContent">
+                <!-- Background color selection -->
+                <div class="color-section">
+                    <h3 style="color: white; margin-bottom: 16px; font-size: 16px;">Background color</h3>
+                    <div class="color-grid">
+                        <div class="color-option selected" data-color="#f56565" style="background: #f56565;" onclick="selectBgColor('#f56565')"></div>
+                        <div class="color-option" data-color="#ed8936" style="background: #ed8936;" onclick="selectBgColor('#ed8936')"></div>
+                        <div class="color-option" data-color="#ecc94b" style="background: #ecc94b;" onclick="selectBgColor('#ecc94b')"></div>
+                        <div class="color-option" data-color="#48bb78" style="background: #48bb78;" onclick="selectBgColor('#48bb78')"></div>
+                        <div class="color-option" data-color="#38b2ac" style="background: #38b2ac;" onclick="selectBgColor('#38b2ac')"></div>
+                        <div class="color-option" data-color="#4299e1" style="background: #4299e1;" onclick="selectBgColor('#4299e1')"></div>
+                        <div class="color-option" data-color="#9f7aea" style="background: #9f7aea;" onclick="selectBgColor('#9f7aea')"></div>
+                        <div class="color-option" data-color="#ed64a6" style="background: #ed64a6;" onclick="selectBgColor('#ed64a6')"></div>
+                        <div class="color-option" data-color="#a0aec0" style="background: #a0aec0;" onclick="selectBgColor('#a0aec0')"></div>
+                    </div>
+                </div>
+
+                <!-- Foreground icon selection -->
+                <div class="color-section">
+                    <h3 style="color: white; margin-bottom: 16px; font-size: 16px;">Foreground color</h3>
+                    <div class="color-grid">
+                        <div class="foreground-option selected" onclick="selectFgColor('local_hospital')">
+                            <span class="material-icons">local_hospital</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('person')">
+                            <span class="material-icons">person</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('face')">
+                            <span class="material-icons">face</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('star')">
+                            <span class="material-icons">star</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('favorite')">
+                            <span class="material-icons">favorite</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('pets')">
+                            <span class="material-icons">pets</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('sports_esports')">
+                            <span class="material-icons">sports_esports</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('music_note')">
+                            <span class="material-icons">music_note</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('camera_alt')">
+                            <span class="material-icons">camera_alt</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('code')">
+                            <span class="material-icons">code</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('work')">
+                            <span class="material-icons">work</span>
+                        </div>
+                        <div class="foreground-option" onclick="selectFgColor('home')">
+                            <span class="material-icons">home</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="preview-section">
+                    <h3 style="color: white; margin-bottom: 16px; font-size: 16px;">Preview</h3>
+                    <div class="avatar-preview" id="avatarPreview">
+                        <span class="material-icons">local_hospital</span>
+                    </div>
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 12px; margin-top: 8px;">
+                        This is how your profile picture will look
+                    </p>
+                </div>
+
+                <!-- Validate Button -->
+                <button class="submit-btn" onclick="validatePicture()">
+                    <span class="material-icons" style="margin-right: 8px;">check</span>
+                    Validate picture
+                </button>
+            </div>
+
+            <!-- From Computer Tab -->
+            <div class="profile-tab-content" id="computerContent" style="display: none;">
+                <div style="text-align: center; padding: 40px 20px;">
+                    <!-- Hidden File Input -->
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+                    
+                    <!-- Upload Area -->
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <span class="material-icons" style="font-size: 48px; color: rgba(255, 255, 255, 0.5); margin-bottom: 16px; display: block;">cloud_upload</span>
+                        <h3 style="color: white; margin-bottom: 8px; font-size: 18px;">Upload your picture</h3>
+                        <p style="color: rgba(255, 255, 255, 0.6); font-size: 14px; margin-bottom: 16px;">
+                            Click here to select an image from your computer
+                        </p>
+                        <p style="color: rgba(255, 255, 255, 0.4); font-size: 12px;">
+                            Supported formats: JPG, PNG, GIF, WebP<br>
+                            Maximum size: 5MB
+                        </p>
+                    </div>
+                    
+                    <!-- Upload Preview (Initially Hidden) -->
+                    <div class="uploaded-preview" id="uploadedPreview" style="display: none;">
+                        <h4 style="color: white; margin-bottom: 16px;">Preview</h4>
+                        <img id="uploadedImage" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin: 20px 0; border: 3px solid var(--md-sys-color-primary);">
+                        <div style="margin: 20px 0;">
+                            <button class="submit-btn" onclick="validateUploadedPicture()" style="margin-right: 8px;">
+                                <span class="material-icons" style="margin-right: 8px;">check</span>
+                                Use this picture
+                            </button>
+                            <button class="submit-btn" onclick="resetUpload()" style="background: #6b7280;">
+                                <span class="material-icons" style="margin-right: 8px;">refresh</span>
+                                Choose another
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Settings Modal -->
+    <div class="bookmarks-modal" id="profileSettingsModal">
+        <div class="bookmarks-header">
+            <div class="bookmarks-title">Profile Settings</div>
+            <button class="mdc-icon-button" onclick="closeProfileSettingsModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="bookmarks-content" style="padding: 40px 24px; text-align: center;">
+            <!-- Profile Picture Section -->
+            <div style="margin-bottom: 32px;">
+                <h3 style="color: white; font-size: 18px; margin-bottom: 24px; font-weight: 500;">Profile Picture</h3>
+                <div class="profile-avatar" style="width: 80px; height: 80px; margin: 0 auto 16px; cursor: pointer; background: gray;">
+                    <div class="avatar-icon">
+                        <span class="material-icons">star</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Name Section -->
+            <div style="margin-bottom: 32px;">
+                <h3 style="color: white; font-size: 18px; margin-bottom: 16px; font-weight: 500;">Profile Name</h3>
+                <input type="text" 
+                    id="profileName" 
+                    value="Default" 
+                    style="width: 100%; max-width: 300px; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; text-align: center; background: white; color: #333;"
+                    placeholder="Enter profile name">
+            </div>
+
+            <!-- Wallet Section -->
+            <div style="margin-bottom: 40px;">
+                <h3 style="color: white; font-size: 18px; margin-bottom: 16px; font-weight: 500;">Wallet</h3>
+                <select id="profileWallet" 
+                        style="width: 100%; max-width: 300px; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; text-align: center; background: white; color: #666;">
+                    <option value="primary">Primary wallet</option>
+                    <option value="pearl">Pearl wallet</option>
+                </select>
+            </div>
+
+            <!-- Save Button -->
+            <button onclick="saveProfileSettings()" 
+                    style="background: #a855f7; color: white; border: none; padding: 16px 48px; border-radius: 25px; font-size: 16px; cursor: pointer; transition: all 0.2s; font-weight: 500;">
+                Save changes
+            </button>
+
+            <!-- Delete Section -->
+            <div style="margin-top: 60px; padding-top: 40px; border-top: 1px solid #eee;">
+                <p style="color: #666; font-size: 14px; line-height: 1.5; margin-bottom: 24px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                    Deleting this profile related data like history, bookmarks and settings will be lost.<br>
+                    All rooms and views related to this profile will be closed and deleted.
+                </p>
+                <button onclick="deleteCurrentProfile()" 
+                        style="background: #a855f7; color: white; border: none; padding: 16px 32px; border-radius: 25px; font-size: 16px; cursor: pointer; transition: all 0.2s; font-weight: 500;">
+                    Delete profile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage Profiles Modal -->
+    <div class="bookmarks-modal" id="manageProfilesModal">
+        <div class="bookmarks-header">
+            <div class="bookmarks-title">Manage Profiles</div>
+            <button class="mdc-icon-button" onclick="closeManageProfilesModal()">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="bookmarks-content">
+            <div class="profiles-list">
+                <div class="profile-item active">
+                    <div class="profile-item-avatar" style="background: gray;">
+                        <span class="material-icons">star</span>
+                    </div>
+                    <div class="profile-item-info">
+                        <div class="profile-item-name">Default</div>
+                        <div class="profile-item-type">Default</div>
+                    </div>
+                    <div class="profile-item-actions">
+                        <button class="profile-action-btn" onclick="showProfileSettings(); closeManageProfilesModal();">
+                            <span class="material-icons">edit</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="profile-item">
+                    <div class="profile-item-avatar" style="background: #4299e1;">
+                        <span class="material-icons">work</span>
+                    </div>
+                    <div class="profile-item-info">
+                        <div class="profile-item-name">Work Profile</div>
+                        <div class="profile-item-type">Work</div>
+                    </div>
+                    <div class="profile-item-actions">
+                        <button class="profile-action-btn" onclick="switchToProfile('work')">
+                            <span class="material-icons">login</span>
+                        </button>
+                        <button class="profile-action-btn" onclick="showProfileSettings(); closeManageProfilesModal();">
+                            <span class="material-icons">edit</span>
+                        </button>
+                        <button class="profile-action-btn delete" onclick="deleteProfile('work')">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="submit-btn" onclick="addNewProfile()">
+                <span class="material-icons">add</span>
+                Add New Profile
+            </button>
         </div>
     </div>
 
@@ -2647,6 +3362,399 @@
             if (currentView === 'browser') {
                 showHome();
             }
+        });
+    </script>
+    <script>
+        // Profile management variables
+        let currentBgColor = '#e53e3e';
+        let currentFgIcon = 'local_hospital';
+        let userProfile = {
+            name: 'Default',
+            type: 'Default',
+            theme: 'Dark',
+            bgColor: '#e53e3e',
+            fgIcon: 'local_hospital',
+            customImage: null,
+            wallet: 'primary'
+        };
+
+        // Profile type icons mapping
+        const profileTypeIcons = {
+            'Default': 'person',
+            'Work': 'work',
+            'Personal': 'home',
+            'Guest': 'person_outline'
+        };
+
+        const profileTypeBadges = {
+            'Default': 'D',
+            'Work': 'W', 
+            'Personal': 'P',
+            'Guest': 'G'
+        };
+
+        // Profile Modal Functions
+        function changeUserAvatar() {
+            document.getElementById('profilePictureModal').classList.add('open');
+        }
+
+        function closeProfilePictureModal() {
+            document.getElementById('profilePictureModal').classList.remove('open');
+        }
+
+        function switchProfileTab(tab) {
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[onclick="switchProfileTab('${tab}')"]`).classList.add('active');
+            
+            if (tab === 'icons') {
+                document.getElementById('iconsContent').style.display = 'block';
+                document.getElementById('computerContent').style.display = 'none';
+            } else {
+                document.getElementById('iconsContent').style.display = 'none';
+                document.getElementById('computerContent').style.display = 'block';
+            }
+        }
+
+        // Color and Icon Selection Functions
+        function selectBgColor(color) {
+            currentBgColor = color;
+            
+            // Update selection visual
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+            const selectedOption = document.querySelector(`[data-color="${color}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+            
+            // Update preview
+            updateAvatarPreview();
+        }
+
+        function selectFgColor(icon) {
+            currentFgIcon = icon;
+            
+            // Update selection visual
+            document.querySelectorAll('.foreground-option').forEach(opt => opt.classList.remove('selected'));
+            const selectedOption = document.querySelector(`[onclick="selectFgColor('${icon}')"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+            
+            // Update preview
+            updateAvatarPreview();
+        }
+
+        // Preview and Color Utility Functions
+        function updateAvatarPreview() {
+            const preview = document.getElementById('avatarPreview');
+            if (preview) {
+                preview.style.background = `linear-gradient(135deg, ${currentBgColor}, ${adjustColor(currentBgColor, -20)})`;
+                preview.innerHTML = `<span class="material-icons">${currentFgIcon}</span>`;
+            }
+        }
+
+        function adjustColor(color, amount) {
+            const num = parseInt(color.replace("#", ""), 16);
+            const amt = Math.round(2.55 * amount);
+            const R = (num >> 16) + amt;
+            const G = (num >> 8 & 0x00FF) + amt;
+            const B = (num & 0x0000FF) + amt;
+            return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 +
+                (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
+                (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
+        }
+
+        // Picture Validation Functions
+        function validatePicture() {
+            // Update user profile
+            userProfile.bgColor = currentBgColor;
+            userProfile.fgIcon = currentFgIcon;
+            userProfile.customImage = null;
+            
+            // Update avatar in menu
+            updateUserAvatar();
+            
+            closeProfilePictureModal();
+            
+            // Success message
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Profile picture updated successfully!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+        function validateUploadedPicture() {
+            if (userProfile.customImage) {
+                updateUserAvatar();
+                closeProfilePictureModal();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Profile picture uploaded successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }
+        }
+
+        // File Upload Functions
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const uploadedImage = document.getElementById('uploadedImage');
+                    uploadedImage.src = e.target.result;
+                    document.getElementById('uploadedPreview').style.display = 'block';
+                    userProfile.customImage = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Avatar and Profile Update Functions
+        function updateUserAvatar() {
+            const avatar = document.getElementById('userAvatar');
+            if (!avatar) return;
+            
+            const avatarIcon = avatar.querySelector('.avatar-icon');
+            
+            // Remove existing badge
+            const existingBadge = avatar.querySelector('.profile-badge');
+            if (existingBadge) {
+                existingBadge.remove();
+            }
+            
+            if (userProfile.customImage) {
+                // Use custom uploaded image
+                avatarIcon.innerHTML = `<img src="${userProfile.customImage}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+                avatar.style.background = 'transparent';
+            } else {
+                // Use icon with background color
+                avatarIcon.innerHTML = `<span class="material-icons">${userProfile.fgIcon}</span>`;
+                avatar.style.background = `linear-gradient(135deg, ${userProfile.bgColor}, ${adjustColor(userProfile.bgColor, -20)})`;
+            }
+            
+            // Add profile type badge
+            const badge = document.createElement('div');
+            badge.className = `profile-badge ${userProfile.type.toLowerCase()}`;
+            badge.textContent = profileTypeBadges[userProfile.type];
+            badge.title = `${userProfile.type} Profile`;
+            avatar.appendChild(badge);
+        }
+
+        function updateProfileInfo() {
+            const userName = document.getElementById('userName');
+            const userProfileType = document.getElementById('userProfileType');
+            
+            if (userName) {
+                userName.textContent = userProfile.name;
+            }
+            
+            if (userProfileType) {
+                userProfileType.innerHTML = `
+                    <span class="material-icons profile-type-icon">${profileTypeIcons[userProfile.type]}</span>
+                    ${userProfile.type}
+                `;
+            }
+        }
+
+        // Profile Settings Modal Functions
+        function showProfileSettings() {
+            const profileNameInput = document.getElementById('profileName');
+            const profileWalletSelect = document.getElementById('profileWallet');
+            const modal = document.getElementById('profileSettingsModal');
+            
+            if (!profileNameInput || !profileWalletSelect || !modal) {
+                console.error('Profile settings elements not found in DOM');
+                return;
+            }
+            
+            // Popola i valori correnti
+            profileNameInput.value = userProfile.name;
+            profileWalletSelect.value = userProfile.wallet;
+            
+            // Apre il modal
+            modal.classList.add('open');
+        }
+
+        function closeProfileSettingsModal() {
+            document.getElementById('profileSettingsModal').classList.remove('open');
+        }
+
+        function saveProfileSettings() {
+            const nameInput = document.getElementById('profileName');
+            const walletSelect = document.getElementById('profileWallet');
+            
+            if (!nameInput || !walletSelect) {
+                console.error('Profile settings inputs not found');
+                return;
+            }
+            
+            const name = nameInput.value;
+            const wallet = walletSelect.value;
+            
+            if (!name.trim()) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please enter a valid profile name'
+                });
+                return;
+            }
+            
+            // Update profile
+            userProfile.name = name;
+            userProfile.wallet = wallet;
+            
+            // Update UI
+            updateProfileInfo();
+            updateUserAvatar();
+            
+            closeProfileSettingsModal();
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: 'Profile settings saved successfully!',
+                showConfirmButton: false,
+                timer: 1500
+            });
+        }
+
+        // Manage Profiles Modal Functions
+        function showManageProfiles() {
+            document.getElementById('manageProfilesModal').classList.add('open');
+        }
+
+        function closeManageProfilesModal() {
+            document.getElementById('manageProfilesModal').classList.remove('open');
+        }
+
+        function switchToProfile(profileId) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Profile Switched!',
+                text: `Switched to ${profileId} profile`,
+                showConfirmButton: false,
+                timer: 1500
+            });
+            // Here you would implement actual profile switching logic
+        }
+
+        function editProfile(profileId) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Edit Profile',
+                text: `Editing ${profileId} profile`
+            });
+            // Here you would open profile editing for specific profile
+        }
+
+        function deleteCurrentProfile() {
+            Swal.fire({
+                title: 'Delete Profile?',
+                html: `
+                    <p style="margin-bottom: 16px;">Deleting this profile related data like history, bookmarks and settings will be lost.</p>
+                    <p>All rooms and views related to this profile will be closed and deleted.</p>
+                `,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#a855f7',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Delete profile',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'swal-wide'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Profile Deleted!',
+                        text: 'The profile has been deleted successfully.',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    closeProfileSettingsModal();
+                    // Qui implementeresti la logica di cancellazione del profilo
+                }
+            });
+        }
+
+        function deleteProfile(profileId) {
+            Swal.fire({
+                title: 'Delete Profile?',
+                text: `Are you sure you want to delete the ${profileId} profile? This action cannot be undone.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Delete',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Deleted!',
+                        text: `${profileId} profile has been deleted.`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    // Here you would implement actual profile deletion
+                }
+            });
+        }
+
+        function addNewProfile() {
+            Swal.fire({
+                title: 'Create New Profile',
+                text: 'Enter a name for the new profile:',
+                input: 'text',
+                inputPlaceholder: 'Profile name...',
+                showCancelButton: true,
+                confirmButtonColor: '#9333ea',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Create',
+                inputValidator: (value) => {
+                    if (!value || !value.trim()) {
+                        return 'Please enter a valid name';
+                    }
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: `Profile "${result.value}" created successfully!`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    closeManageProfilesModal();
+                    // Here you would implement actual profile creation
+                }
+            });
+        }
+
+        // Reset Upload Function
+        function resetUpload() {
+            document.getElementById('uploadedPreview').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            userProfile.customImage = null;
+        }
+
+        // Initialization - Run when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize avatar preview if modal exists
+            updateAvatarPreview();
+            selectBgColor(currentBgColor);
+            selectFgColor(currentFgIcon);
+            
+            // Initialize user avatar and profile info
+            updateUserAvatar();
+            updateProfileInfo();
         });
     </script>
 </body>
