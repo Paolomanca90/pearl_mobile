@@ -281,8 +281,8 @@
 
         .sidebar-link:hover,
         .sidebar-link.active {
-            background: #e3f2fd;
-            color: #2196f3;
+            background: linear-gradient(135deg, #6b46c1, #9333ea);
+            color: white;
         }
 
         .sidebar-icon {
@@ -2095,8 +2095,12 @@
         <div class="nav-item" id="bookmarksNav" onclick="showBookmarks()">
             <span class="material-icons nav-icon">bookmark</span>
         </div>
-        <div class="nav-item" id="searchNav" onclick="showSearch()">
-            <span class="material-icons nav-icon">search</span>
+        <div class="nav-item" id="searchNav" onclick="showManageProfiles()">
+            <div class="profile-avatar" style="width: 35px; height: 35px; cursor: pointer; background: gray;">
+                <div class="avatar-icon">
+                    <span class="material-icons">star</span>
+                </div>
+            </div>
         </div>
         <div class="nav-item" id="tabsNav" onclick="toggleTabs()">
             <div class="tab-icon-container">
@@ -2933,7 +2937,12 @@
                     
                     // If this was the active tab, show home
                     if (currentView === 'fake-tab') {
-                        showHome();
+                        const url = document.getElementById('addressBar').value;
+                        if (url !== '') {
+                            showBrowser(url);
+                        } else {
+                            showHome();
+                        }
                     }
                 }, 300);
             }
@@ -3387,7 +3396,7 @@
         };
 
         const profileTypeBadges = {
-            'Default': 'D',
+            'Default': '☆',
             'Work': 'W', 
             'Personal': 'P',
             'Guest': 'G'
