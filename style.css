@@ -1667,30 +1667,31 @@ transform: translateY(-1px);
 
 /* MultiTabs Grid */
 .multitabs-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 16px;
-margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 32px;
 }
 
 .multitab-item {
-background: var(--md-sys-color-surface-variant);
-border: 1px solid var(--md-sys-color-outline);
-border-radius: 16px;
-padding: 16px;
-cursor: pointer;
-transition: all 0.3s ease;
-position: relative;
+    background: var(--md-sys-color-surface-variant);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    width: 100%;
 }
 
 .multitab-item:hover {
-background: rgba(255, 255, 255, 0.15);
-transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
 }
 
 .multitab-item.selected {
-border-color: #4285f4;
-background: rgba(66, 133, 244, 0.1);
+    border-color: #4285f4;
+    background: rgba(66, 133, 244, 0.1);
 }
 
 .multitab-header {
@@ -2017,4 +2018,133 @@ animation: spin 1s linear infinite;
 @keyframes spin {
 0% { transform: rotate(0deg); }
 100% { transform: rotate(360deg); }
+}
+
+/* Active Multitab Bar */
+.active-multitab-bar {
+    position: fixed;
+    bottom: 60px; /* Sopra la bottom nav */
+    left: 0;
+    right: 0;
+    background: rgba(45, 27, 105, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--md-sys-color-outline);
+    padding: 8px 16px;
+    display: none;
+    z-index: 40;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.active-multitab-bar.show {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.active-tab-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    padding: 6px;
+    color: white;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+}
+
+.active-tab-item:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.active-tab-item.current {
+    background: var(--md-sys-color-primary);
+    border-color: var(--md-sys-color-primary);
+}
+
+.add-tab-btn {
+    background: var(--md-sys-color-primary);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 8px;
+    font-size: x-large;
+}
+
+.expand-tabs-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-left: 8px;
+}
+
+.open-tabs-btn {
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+}
+
+.open-tabs-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive adjustments */
+@media (max-width: 380px) {
+    .multitabs-grid {
+        gap: 12px;
+    }
+    
+    .active-multitab-bar {
+        padding: 6px 12px;
+    }
+    
+    .active-tab-item {
+        max-width: 100px;
+        padding: 6px 10px;
+    }
+}
+
+/* Nascondi multitabs nella vista single tabs */
+.single-tabs-grid ~ .multitabs-grid {
+    display: none;
+}
+
+/* Mostra multitabs solo nella vista groups */
+.groups-view .multitabs-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Vista groups container */
+.groups-view {
+    display: none;
+}
+
+.groups-view.active {
+    display: block;
 }

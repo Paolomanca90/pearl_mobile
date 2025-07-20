@@ -1,3 +1,6 @@
+let activeMultitab = null;
+let activeMultitabTabs = [];
+
 let tabs = [
   {
     id: 1,
@@ -36,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
   mdc.autoInit();
   renderTabs();
   updateTabCount();
+  initializeTabsView();
 
   // Address bar functionality
   const addressBar = document.getElementById("addressBar");
@@ -613,29 +617,33 @@ function updateCurrentTab(url) {
 
 // View management
 function showHome() {
-  currentView = "home";
+    currentView = "home";
 
-  // Hide all fake tabs
-  document.querySelectorAll(".fake-tab").forEach((tab) => {
-    tab.classList.remove("active");
-  });
+    // Hide all fake tabs
+    document.querySelectorAll(".fake-tab").forEach((tab) => {
+        tab.classList.remove("active");
+    });
 
-  const currentTab = tabs.find((tab) => tab.id === currentTabId);
+    const currentTab = tabs.find((tab) => tab.id === currentTabId);
 
-  if (currentTab && currentTab.isIncognito) {
-    document.getElementById("homeContent").classList.add("hidden");
-    document.getElementById("incognitoHome").classList.add("active");
-    setIncognitoMode(true);
-  } else {
-    document.getElementById("homeContent").classList.remove("hidden");
-    document.getElementById("incognitoHome").classList.remove("active");
-    setIncognitoMode(false);
-  }
+    if (currentTab && currentTab.isIncognito) {
+        document.getElementById("homeContent").classList.add("hidden");
+        document.getElementById("incognitoHome").classList.add("active");
+        setIncognitoMode(true);
+    } else {
+        document.getElementById("homeContent").classList.remove("hidden");
+        document.getElementById("incognitoHome").classList.remove("active");
+        setIncognitoMode(false);
+    }
 
-  document.getElementById("searchPage").classList.remove("active");
-  document.getElementById("browserView").classList.remove("active");
-  document.getElementById("addressBar").value = "";
-  updateActiveNav("homeNav");
+    document.getElementById("searchPage").classList.remove("active");
+    document.getElementById("browserView").classList.remove("active");
+    document.getElementById("addressBar").value = "";
+    
+    // Nascondi la barra delle multitab quando si torna alla home
+    hideActiveMultitabBar();
+    
+    updateActiveNav("homeNav");
 }
 
 function showSearch() {
@@ -704,20 +712,33 @@ function closeTabs() {
 }
 
 function switchTabsMode(mode) {
-  currentTabsMode = mode;
-  const singleIcon = document.getElementById("singleTabsIcon");
-  const groupIcon = document.getElementById("groupTabsIcon");
-  const singleGrid = document.getElementById("singleTabsGrid");
+    currentTabsMode = mode;
+    const singleIcon = document.getElementById("singleTabsIcon");
+    const groupIcon = document.getElementById("groupTabsIcon");
+    const singleView = document.getElementById("singleTabsView");
+    const groupsView = document.getElementById("groupsView");
 
-  if (mode === "single") {
-    singleIcon.classList.add("active");
-    groupIcon.classList.remove("active");
-    singleGrid.style.display = "grid";
-  } else {
-    groupIcon.classList.add("active");
-    singleIcon.classList.remove("active");
-    singleGrid.style.display = "none";
-  }
+    if (mode === "single") {
+        // Attiva vista single tabs
+        singleIcon.classList.add("active");
+        groupIcon.classList.remove("active");
+        singleView.style.display = "block";
+        groupsView.classList.remove("active");
+        
+        // Nascondi la barra multitab attiva se presente
+        hideActiveMultitabBar();
+    } else {
+        // Attiva vista groups
+        groupIcon.classList.add("active");
+        singleIcon.classList.remove("active");
+        singleView.style.display = "none";
+        groupsView.classList.add("active");
+    }
+}
+
+function initializeTabsView() {
+    // Assicurati che la vista corretta sia mostrata all'avvio
+    switchTabsMode(currentTabsMode);
 }
 
 function renderTabs() {
@@ -1430,19 +1451,22 @@ const multitabData = {
 
 // Multitab management functions
 function selectMultitab(multitabId) {
-  // Remove previous selection
-  document.querySelectorAll(".multitab-item").forEach((item) => {
-    item.classList.remove("selected");
-  });
+    // Remove previous selection
+    document.querySelectorAll('.multitab-item').forEach((item) => {
+        item.classList.remove('selected');
+    });
 
-  // Add selection to clicked item
-  const selectedItem = document.querySelector(
-    `[data-multitab="${multitabId}"]`
-  );
-  if (selectedItem) {
-    selectedItem.classList.add("selected");
-    currentSelectedMultitab = multitabId;
-  }
+    // Add selection to clicked item
+    const selectedItem = document.querySelector(`[data-multitab="${multitabId}"]`);
+    if (selectedItem) {
+        selectedItem.classList.add('selected');
+        currentSelectedMultitab = multitabId;
+        
+        // Se questo multitab è già attivo, mostra la barra
+        if (activeMultitab === multitabId) {
+            showActiveMultitabBar();
+        }
+    }
 }
 
 function toggleMultitabMenu(multitabId) {
@@ -1459,12 +1483,92 @@ function toggleMultitabMenu(multitabId) {
 }
 
 function openMultitab(multitabId) {
-  const multitab = multitabData[multitabId];
-  if (multitab && multitab.tabs.length > 0) {
-    // Navigate to first tab of the multitab
-    navigateToSite("https://" + multitab.tabs[0].url);
-  }
-  closeAllMultitabMenus();
+    const multitab = multitabData[multitabId];
+    if (multitab && multitab.tabs.length > 0) {
+        activeMultitab = multitabId;
+        activeMultitabTabs = [...multitab.tabs];
+        showActiveMultitabBar();
+        
+        // Naviga alla prima tab
+        navigateToSite("https://" + multitab.tabs[0].url);
+    }
+    closeAllMultitabMenus();
+}
+
+function showActiveMultitabBar() {
+    const bar = document.getElementById('activeMultitabBar');
+    const multitab = multitabData[activeMultitab];
+    
+    if (!multitab || !bar) return;
+    
+    bar.innerHTML = '';
+    const section = document.createElement('span');
+    bar.appendChild(section);
+
+    // Bottone per espandere (mostra modale)
+    const expandBtn = document.createElement('button');
+    expandBtn.className = 'open-tabs-btn';
+    expandBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="m256-424-56-56 280-280 280 280-56 56-224-223-224 223Z"/></svg>';
+    expandBtn.onclick = () => showMultitabDetails();
+    section.appendChild(expandBtn);
+    
+    // Aggiungi le tab attive
+    activeMultitabTabs.forEach((tab, index) => {
+        const tabElement = document.createElement('div');
+        tabElement.className = 'active-tab-item';
+        if (index === 0) tabElement.classList.add('current');
+        tabElement.innerHTML = `<i class="material-icons">${tab.icon}</i>`;
+        tabElement.onclick = () => {
+            // Rimuovi current da tutte le tab
+            document.querySelectorAll('.active-tab-item').forEach(t => t.classList.remove('current'));
+            tabElement.classList.add('current');
+            navigateToSite("https://" + tab.url);
+        };
+        section.appendChild(tabElement);
+    });
+    
+    // Bottone per aggiungere tab
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-tab-btn';
+    addBtn.innerHTML = '+';
+    addBtn.onclick = () => addNewTabToMultitab();
+    bar.appendChild(addBtn);
+    
+    
+    bar.classList.add('show');
+}
+
+function hideActiveMultitabBar() {
+    const bar = document.getElementById('activeMultitabBar');
+    if (bar) {
+        bar.classList.remove('show');
+    }
+    activeMultitab = null;
+    activeMultitabTabs = [];
+}
+
+function addNewTabToMultitab() {
+    if (!activeMultitab) return;
+    
+    // Mostra un prompt per aggiungere una nuova tab
+    const newTabUrl = prompt('Inserisci l\'URL della nuova tab:');
+    if (newTabUrl) {
+        const newTab = {
+            title: newTabUrl.replace(/^https?:\/\//, ''),
+            url: newTabUrl.replace(/^https?:\/\//, ''),
+            icon: 'public'
+        };
+        
+        // Aggiungi alla lista attiva e ai dati
+        activeMultitabTabs.push(newTab);
+        multitabData[activeMultitab].tabs.push(newTab);
+        
+        // Aggiorna la barra
+        showActiveMultitabBar();
+        
+        // Naviga alla nuova tab
+        navigateToSite("https://" + newTab.url);
+    }
 }
 
 function deleteMultitab(multitabId) {
@@ -1509,27 +1613,38 @@ function closeAllMultitabMenus() {
 
 // Multitab details modal functions
 function showMultitabDetails() {
-  if (!currentSelectedMultitab) return;
+    if (!activeMultitab) {
+        // Se non c'è un multitab attivo, usa quello selezionato
+        if (!currentSelectedMultitab) return;
+        activeMultitab = currentSelectedMultitab;
+        activeMultitabTabs = [...multitabData[activeMultitab].tabs];
+    }
 
-  const multitab = multitabData[currentSelectedMultitab];
-  if (!multitab) return;
+    const multitab = multitabData[activeMultitab];
+    if (!multitab) return;
 
-  const modal = document.getElementById("multitabDetailsModal");
-  const grid = document.getElementById("multitabDetailsGrid");
+    const modal = document.getElementById("multitabDetailsModal");
+    const grid = document.getElementById("multitabDetailsGrid");
 
-  // Clear previous content
-  grid.innerHTML = "";
+    // Clear previous content
+    grid.innerHTML = "";
 
-  // Populate with tabs
-  multitab.tabs.forEach((tab) => {
-    const tabElement = document.createElement("div");
-    tabElement.className = "multitab-detail-tab";
-    tabElement.onclick = () => {
-      navigateToSite("https://" + tab.url);
-      closeMultitabDetails();
-    };
+    // Populate with active tabs
+    activeMultitabTabs.forEach((tab, index) => {
+        const tabElement = document.createElement("div");
+        tabElement.className = "multitab-detail-tab";
+        tabElement.onclick = () => {
+            navigateToSite("https://" + tab.url);
+            
+            // Update current tab in the bar
+            document.querySelectorAll('.active-tab-item').forEach((t, i) => {
+                t.classList.toggle('current', i === index);
+            });
+            
+            closeMultitabDetails();
+        };
 
-    tabElement.innerHTML = `
+        tabElement.innerHTML = `
             <div class="multitab-tab-preview">
                 <span class="material-icons">${tab.icon}</span>
             </div>
@@ -1544,10 +1659,10 @@ function showMultitabDetails() {
             </div>
         `;
 
-    grid.appendChild(tabElement);
-  });
+        grid.appendChild(tabElement);
+    });
 
-  modal.classList.add("open");
+    modal.classList.add("open");
 }
 
 function closeMultitabDetails() {

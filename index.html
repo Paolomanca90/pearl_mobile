@@ -246,63 +246,68 @@
         
         <div class="tabs-grid-container">
             <!-- Single Tabs View -->
-            <div class="single-tabs-grid" id="singleTabsGrid">
-                <!-- Tabs will be dynamically added here -->
+            <div class="single-tabs-view" id="singleTabsView">
+                <div class="single-tabs-grid" id="singleTabsGrid">
+                    <!-- Tabs will be dynamically added here -->
+                </div>
             </div>
             
-            <!-- MultiTabs Grid -->
-            <div class="multitabs-grid">
-                <div class="multitab-item" onclick="selectMultitab('sport')" data-multitab="sport">
-                    <div class="multitab-header">
-                        <div class="multitab-icons">
-                            <div class="multitab-icon" style="background: #1a73e8;">
-                                <span class="material-icons">sports_soccer</span>
+            <!-- Groups View -->
+            <div class="groups-view" id="groupsView">
+                <!-- MultiTabs Grid -->
+                <div class="multitabs-grid">
+                    <div class="multitab-item" onclick="selectMultitab('sport')" data-multitab="sport">
+                        <div class="multitab-header">
+                            <div class="multitab-icons">
+                                <div class="multitab-icon" style="background: #1a73e8;">
+                                    <span class="material-icons">sports_soccer</span>
+                                </div>
+                                <div class="multitab-icon" style="background: #ea4335;">
+                                    <span class="material-icons">sports_basketball</span>
+                                </div>
                             </div>
-                            <div class="multitab-icon" style="background: #ea4335;">
-                                <span class="material-icons">sports_basketball</span>
-                            </div>
-                        </div>
-                        <div class="multitab-menu" onclick="event.stopPropagation(); toggleMultitabMenu('sport')">
-                            <span class="material-icons">more_vert</span>
-                            <div class="multitab-dropdown" id="dropdown-sport">
-                                <div class="multitab-dropdown-item" onclick="openMultitab('sport')">Open</div>
-                                <div class="multitab-dropdown-item" onclick="deleteMultitab('sport')">Delete</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="multitab-info">
-                        <div class="multitab-title">
-                            <span class="multitab-color-dot" style="background: #4285f4;"></span>
-                            Sport
-                        </div>
-                        <div class="multitab-subtitle">Created now</div>
-                    </div>
-                </div>
-                
-                <div class="multitab-item" onclick="selectMultitab('lavoro')" data-multitab="lavoro">
-                    <div class="multitab-header">
-                        <div class="multitab-icons">
-                            <div class="multitab-icon" style="background: #34a853;">
-                                <span class="material-icons">work</span>
-                            </div>
-                            <div class="multitab-icon" style="background: #fbbc04;">
-                                <span class="material-icons">code</span>
+                            <div class="multitab-menu" onclick="event.stopPropagation(); toggleMultitabMenu('sport')">
+                                <span class="material-icons">more_vert</span>
+                                <div class="multitab-dropdown" id="dropdown-sport">
+                                    <div class="multitab-dropdown-item" onclick="openMultitab('sport')">Open</div>
+                                    <div class="multitab-dropdown-item" onclick="deleteMultitab('sport')">Delete</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="multitab-menu" onclick="event.stopPropagation(); toggleMultitabMenu('lavoro')">
-                            <span class="material-icons">more_vert</span>
-                            <div class="multitab-dropdown" id="dropdown-lavoro">
-                                <div class="multitab-dropdown-item" onclick="openMultitab('lavoro')">Open</div>
-                                <div class="multitab-dropdown-item" onclick="deleteMultitab('lavoro')">Delete</div>
+                        <div class="multitab-info">
+                            <div class="multitab-title">
+                                <span class="multitab-color-dot" style="background: #4285f4;"></span>
+                                Sport
                             </div>
+                            <div class="multitab-subtitle">Created now</div>
                         </div>
                     </div>
-                    <div class="multitab-info">
-                        <div class="multitab-title">
-                            <span class="multitab-color-dot" style="background: #666;"></span>
-                            Work
+                    
+                    <div class="multitab-item" onclick="selectMultitab('lavoro')" data-multitab="lavoro">
+                        <div class="multitab-header">
+                            <div class="multitab-icons">
+                                <div class="multitab-icon" style="background: #34a853;">
+                                    <span class="material-icons">work</span>
+                                </div>
+                                <div class="multitab-icon" style="background: #fbbc04;">
+                                    <span class="material-icons">code</span>
+                                </div>
+                            </div>
+                            <div class="multitab-menu" onclick="event.stopPropagation(); toggleMultitabMenu('lavoro')">
+                                <span class="material-icons">more_vert</span>
+                                <div class="multitab-dropdown" id="dropdown-lavoro">
+                                    <div class="multitab-dropdown-item" onclick="openMultitab('lavoro')">Open</div>
+                                    <div class="multitab-dropdown-item" onclick="deleteMultitab('lavoro')">Delete</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="multitab-subtitle">19/07/2025</div>
+                        <div class="multitab-info">
+                            <div class="multitab-title">
+                                <span class="multitab-color-dot" style="background: #666;"></span>
+                                Work
+                            </div>
+                            <div class="multitab-subtitle">19/07/2025</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -454,10 +459,15 @@
         </div>
     </div>
 
+    <!-- Active Multitab Bar -->
+    <div class="active-multitab-bar" id="activeMultitabBar" style="padding-bottom: 15px;">
+        <!-- Le tab attive verranno inserite dinamicamente qui -->
+    </div>
+
     <!-- Multitab Details Modal -->
     <div class="multitab-details-modal" id="multitabDetailsModal">
         <div class="multitab-details-header">
-            <div class="multitab-details-title">Tabs do Multitab</div>
+            <div class="multitab-details-title">Multitabs</div>
             <button class="mdc-icon-button" onclick="closeMultitabDetails()">
                 <span class="material-icons">close</span>
             </button>
