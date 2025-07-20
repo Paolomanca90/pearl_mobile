@@ -1503,6 +1503,8 @@ function showActiveMultitabBar() {
     
     bar.innerHTML = '';
     const section = document.createElement('span');
+    section.style.display = 'flex';
+    section.style.gap = '0.5em';
     bar.appendChild(section);
 
     // Bottone per espandere (mostra modale)
@@ -1550,25 +1552,58 @@ function hideActiveMultitabBar() {
 function addNewTabToMultitab() {
     if (!activeMultitab) return;
     
-    // Mostra un prompt per aggiungere una nuova tab
-    const newTabUrl = prompt('Inserisci l\'URL della nuova tab:');
-    if (newTabUrl) {
-        const newTab = {
-            title: newTabUrl.replace(/^https?:\/\//, ''),
-            url: newTabUrl.replace(/^https?:\/\//, ''),
-            icon: 'public'
-        };
-        
-        // Aggiungi alla lista attiva e ai dati
-        activeMultitabTabs.push(newTab);
-        multitabData[activeMultitab].tabs.push(newTab);
-        
-        // Aggiorna la barra
-        showActiveMultitabBar();
-        
-        // Naviga alla nuova tab
-        navigateToSite("https://" + newTab.url);
+    // Crea una nuova tab home come nelle tab singole
+    const newTab = {
+        title: "Pearl Browser - Home",
+        url: "",
+        icon: "home"
+    };
+    
+    // Aggiungi alla lista attiva e ai dati
+    activeMultitabTabs.push(newTab);
+    multitabData[activeMultitab].tabs.push(newTab);
+    
+    // Vai alla home mantenendo il multitab attivo
+    navigateToHomeWithMultitab();
+    
+    // Aggiorna la tab corrente nella barra
+    const activeTabItems = document.querySelectorAll('.active-tab-item');
+    activeTabItems.forEach((item, index) => {
+        item.classList.toggle('current', index === activeTabItems.length - 1);
+    });
+}
+
+function navigateToHomeWithMultitab() {
+    // Funzione specifica per navigare alla home mantenendo il multitab attivo
+    currentView = "home";
+
+    // Hide all fake tabs
+    document.querySelectorAll(".fake-tab").forEach((tab) => {
+        tab.classList.remove("active");
+    });
+
+    const currentTab = tabs.find((tab) => tab.id === currentTabId);
+
+    if (currentTab && currentTab.isIncognito) {
+        document.getElementById("homeContent").classList.add("hidden");
+        document.getElementById("incognitoHome").classList.add("active");
+        setIncognitoMode(true);
+    } else {
+        document.getElementById("homeContent").classList.remove("hidden");
+        document.getElementById("incognitoHome").classList.remove("active");
+        setIncognitoMode(false);
     }
+
+    document.getElementById("searchPage").classList.remove("active");
+    document.getElementById("browserView").classList.remove("active");
+    document.getElementById("addressBar").value = "";
+    
+    // Mantieni sempre la barra multitab se c'è un multitab attivo
+    if (activeMultitab) {
+        showActiveMultitabBar();
+    }
+    
+    updateActiveNav("homeNav");
 }
 
 function deleteMultitab(multitabId) {
