@@ -1702,8 +1702,10 @@ margin-bottom: 12px;
 }
 
 .multitab-icons {
-display: flex;
-gap: 8px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap; /* Permette di andare a capo se necessario */
+    max-width: 160px; /* Limita la larghezza */
 }
 
 .multitab-icon {
@@ -2053,6 +2055,7 @@ animation: spin 1s linear infinite;
     cursor: pointer;
     transition: all 0.2s;
     display: flex;
+    position: relative;
 }
 
 .active-tab-item:hover {
@@ -2062,6 +2065,29 @@ animation: spin 1s linear infinite;
 .active-tab-item.current {
     background: var(--md-sys-color-primary);
     border-color: var(--md-sys-color-primary);
+}
+
+.close-tab-x {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #2d1b69f2;
+    color: white;
+    border: 1.5px solid rgb(218, 216, 216);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.close-tab-x:hover {
+    background: #b053c7;
 }
 
 .add-tab-btn {

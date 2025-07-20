@@ -41,6 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
   updateTabCount();
   initializeTabsView();
 
+  initializeMultitabGroups();
+
   // Address bar functionality
   const addressBar = document.getElementById("addressBar");
   addressBar.addEventListener("keypress", function (e) {
@@ -600,6 +602,11 @@ function navigateToSite(url) {
     overlay.classList.remove("open");
   });
 
+  const tabScreen = document.getElementById("tabsScreen");
+  if (tabScreen && tabScreen.classList.contains("open")) {
+    tabScreen.classList.remove("open");
+  }
+
   document.getElementById("addressBar").value = url;
   navigateToUrl(url);
 }
@@ -739,6 +746,12 @@ function switchTabsMode(mode) {
 function initializeTabsView() {
     // Assicurati che la vista corretta sia mostrata all'avvio
     switchTabsMode(currentTabsMode);
+}
+
+function initializeMultitabGroups() {
+    Object.keys(multitabData).forEach(multitabId => {
+        updateMultitabGroupsDisplay(multitabId);
+    });
 }
 
 function renderTabs() {
@@ -1414,6 +1427,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize user avatar and profile info
   updateUserAvatar();
   updateProfileInfo();
+  Object.keys(multitabData).forEach(multitabId => {
+        updateMultitabGroupsDisplay();
+    });
 });
 
 let currentSelectedMultitab = "";
@@ -1489,8 +1505,8 @@ function openMultitab(multitabId) {
         activeMultitabTabs = [...multitab.tabs];
         showActiveMultitabBar();
         
-        // Naviga alla prima tab
-        navigateToSite("https://" + multitab.tabs[0].url);
+        // Mostra il modale invece di navigare direttamente
+        showMultitabDetails();
     }
     closeAllMultitabMenus();
 }
@@ -1507,7 +1523,7 @@ function showActiveMultitabBar() {
     section.style.gap = '0.5em';
     bar.appendChild(section);
 
-    // Bottone per espandere (mostra modale)
+    // Bottone per espandere
     const expandBtn = document.createElement('button');
     expandBtn.className = 'open-tabs-btn';
     expandBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="white"><path d="m256-424-56-56 280-280 280 280-56 56-224-223-224 223Z"/></svg>';
@@ -1519,12 +1535,27 @@ function showActiveMultitabBar() {
         const tabElement = document.createElement('div');
         tabElement.className = 'active-tab-item';
         if (index === 0) tabElement.classList.add('current');
-        tabElement.innerHTML = `<i class="material-icons">${tab.icon}</i>`;
+        
+        tabElement.innerHTML = `
+            <i class="material-icons">${tab.icon}</i>
+            <span class="close-tab-x" onclick="event.stopPropagation(); removeTabFromMultitab(${index})" style="display: ${index === 0 ? 'inline-flex' : 'none'};">×</span>
+        `;
+        
         tabElement.onclick = () => {
             // Rimuovi current da tutte le tab
             document.querySelectorAll('.active-tab-item').forEach(t => t.classList.remove('current'));
             tabElement.classList.add('current');
-            navigateToSite("https://" + tab.url);
+            
+            // Mostra X solo sulla tab corrente
+            document.querySelectorAll('.close-tab-x').forEach(x => x.style.display = 'none');
+            const closeBtn = tabElement.querySelector('.close-tab-x');
+            closeBtn.style.display = 'inline-flex';
+            
+            if (tab.url) {
+                navigateToSite("https://" + tab.url);
+            } else {
+                navigateToHomeWithMultitab();
+            }
         };
         section.appendChild(tabElement);
     });
@@ -1536,8 +1567,71 @@ function showActiveMultitabBar() {
     addBtn.onclick = () => addNewTabToMultitab();
     bar.appendChild(addBtn);
     
-    
     bar.classList.add('show');
+}
+
+function removeTabFromMultitab(tabIndex) {
+    if (!activeMultitab || tabIndex < 0 || tabIndex >= activeMultitabTabs.length) return;
+    
+    // Se c'è solo una tab, chiudi il multitab
+    if (activeMultitabTabs.length === 1) {
+        hideActiveMultitabBar();
+        showHome();
+        return;
+    }
+    
+    // Rimuovi la tab
+    activeMultitabTabs.splice(tabIndex, 1);
+    multitabData[activeMultitab].tabs.splice(tabIndex, 1);
+    
+    // Aggiorna la barra multitab
+    showActiveMultitabBar();
+    
+    // Aggiorna SPECIFICATAMENTE questo multitab nei raggruppamenti
+    updateMultitabGroupsDisplay(activeMultitab);
+    
+    // Se era la tab corrente, attiva la prima disponibile
+    const firstTab = activeMultitabTabs[0];
+    if (firstTab && firstTab.url) {
+        navigateToSite("https://" + firstTab.url);
+    } else {
+        navigateToHomeWithMultitab();
+    }
+}
+
+function updateMultitabGroupsDisplay(multitabId = activeMultitab) {
+    if (!multitabId || !multitabData[multitabId]) return;
+    
+    const multitabItem = document.querySelector(`[data-multitab="${multitabId}"]`);
+    if (multitabItem) {
+        const iconsContainer = multitabItem.querySelector('.multitab-icons');
+        if (iconsContainer) {
+            iconsContainer.innerHTML = '';
+            
+            // Mostra tutte le tab (max 3-4 icone)
+            const tabsToShow = multitabData[multitabId].tabs.slice(0, 4);
+            tabsToShow.forEach((tab, index) => {
+                const iconDiv = document.createElement('div');
+                iconDiv.className = 'multitab-icon';
+                
+                // Colori dinamici per le icone
+                const colors = ['#1a73e8', '#ea4335', '#34a853', '#fbbc04'];
+                iconDiv.style.background = colors[index] || '#666';
+                
+                iconDiv.innerHTML = `<span class="material-icons">${tab.icon}</span>`;
+                iconsContainer.appendChild(iconDiv);
+            });
+            
+            // Se ci sono più di 4 tab, aggiungi un indicatore "+"
+            if (multitabData[multitabId].tabs.length > 4) {
+                const moreIcon = document.createElement('div');
+                moreIcon.className = 'multitab-icon';
+                moreIcon.style.background = '#9e9e9e';
+                moreIcon.innerHTML = `<span class="material-icons">more_horiz</span>`;
+                iconsContainer.appendChild(moreIcon);
+            }
+        }
+    }
 }
 
 function hideActiveMultitabBar() {
@@ -1552,10 +1646,9 @@ function hideActiveMultitabBar() {
 function addNewTabToMultitab() {
     if (!activeMultitab) return;
     
-    // Crea una nuova tab home come nelle tab singole
     const newTab = {
         title: "Pearl Browser - Home",
-        url: "",
+        url: "", // URL vuoto per Home
         icon: "home"
     };
     
@@ -1563,14 +1656,24 @@ function addNewTabToMultitab() {
     activeMultitabTabs.push(newTab);
     multitabData[activeMultitab].tabs.push(newTab);
     
+    // Aggiorna la barra multitab
+    showActiveMultitabBar();
+    
+    // Aggiorna SPECIFICATAMENTE questo multitab nei raggruppamenti
+    updateMultitabGroupsDisplay(activeMultitab);
+    
     // Vai alla home mantenendo il multitab attivo
     navigateToHomeWithMultitab();
     
-    // Aggiorna la tab corrente nella barra
-    const activeTabItems = document.querySelectorAll('.active-tab-item');
-    activeTabItems.forEach((item, index) => {
-        item.classList.toggle('current', index === activeTabItems.length - 1);
-    });
+    // Aggiorna la tab corrente (l'ultima aggiunta)
+    setTimeout(() => {
+        const activeTabItems = document.querySelectorAll('.active-tab-item');
+        activeTabItems.forEach((item, index) => {
+            item.classList.toggle('current', index === activeTabItems.length - 1);
+            const closeBtn = item.querySelector('.close-tab-x');
+            closeBtn.style.display = index === activeTabItems.length - 1 ? 'inline-flex' : 'none';
+        });
+    }, 100);
 }
 
 function navigateToHomeWithMultitab() {
@@ -1611,31 +1714,65 @@ function deleteMultitab(multitabId) {
   if (!multitab) return;
 
   const tabCount = multitab.tabs.length;
-  const message =
-    tabCount > 0
-      ? `Eliminar "${multitab.name}" con ${tabCount} tab${
-          tabCount > 1 ? "s" : ""
-        }?`
-      : `Eliminar "${multitab.name}"?`;
+  const message = tabCount > 0
+    ? `Delete "${multitab.name}" with ${tabCount} tab${tabCount > 1 ? "s" : ""}?`
+    : `Delete "${multitab.name}"?`;
 
-  if (confirm(message)) {
-    const multitabElement = document.querySelector(
-      `[data-multitab="${multitabId}"]`
-    );
-    if (multitabElement) {
-      // Animate removal
-      multitabElement.style.transform = "scale(0)";
-      multitabElement.style.opacity = "0";
-
-      setTimeout(() => {
-        multitabElement.remove();
-
-        if (currentSelectedMultitab === multitabId) {
-          hidePrivacyStats();
-        }
-      }, 300);
+  // Use SweetAlert instead of ugly confirm()
+  Swal.fire({
+    title: 'Delete multitab?',
+    text: message,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Delete',
+    cancelButtonText: 'Cancel',
+    reverseButtons: true, // Puts "Cancel" on the left
+    customClass: {
+      popup: 'swal-custom-popup',
+      title: 'swal-custom-title',
+      content: 'swal-custom-content'
     }
-  }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const multitabElement = document.querySelector(`[data-multitab="${multitabId}"]`);
+      
+      if (multitabElement) {
+        // Animate removal
+        multitabElement.style.transform = "scale(0)";
+        multitabElement.style.opacity = "0";
+
+        setTimeout(() => {
+          multitabElement.remove();
+
+          // If the deleted multitab was active, hide the bar
+          if (activeMultitab === multitabId) {
+            hideActiveMultitabBar();
+            showHome();
+          }
+
+          if (currentSelectedMultitab === multitabId) {
+            currentSelectedMultitab = '';
+          }
+
+          // Remove from data as well
+          delete multitabData[multitabId];
+
+          // Show success message
+          Swal.fire({
+            title: 'Deleted!',
+            text: `"${multitab.name}" has been successfully deleted.`,
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+          });
+        }, 300);
+      }
+    }
+  });
 
   closeAllMultitabMenus();
 }
@@ -1649,7 +1786,6 @@ function closeAllMultitabMenus() {
 // Multitab details modal functions
 function showMultitabDetails() {
     if (!activeMultitab) {
-        // Se non c'è un multitab attivo, usa quello selezionato
         if (!currentSelectedMultitab) return;
         activeMultitab = currentSelectedMultitab;
         activeMultitabTabs = [...multitabData[activeMultitab].tabs];
@@ -1669,14 +1805,33 @@ function showMultitabDetails() {
         const tabElement = document.createElement("div");
         tabElement.className = "multitab-detail-tab";
         tabElement.onclick = () => {
-            navigateToSite("https://" + tab.url);
+            // Chiudi ENTRAMBI i modali
+            closeMultitabDetails();
+            closeTabs(); // Chiude anche il tabs screen
+            
+            // Aggiorna la barra multitab se non è già mostrata
+            if (!document.getElementById('activeMultitabBar').classList.contains('show')) {
+                showActiveMultitabBar();
+            }
+            
+            // Naviga al sito
+            if (tab.url) {
+                navigateToSite("https://" + tab.url);
+            } else {
+                navigateToHomeWithMultitab();
+            }
             
             // Update current tab in the bar
-            document.querySelectorAll('.active-tab-item').forEach((t, i) => {
-                t.classList.toggle('current', i === index);
-            });
-            
-            closeMultitabDetails();
+            setTimeout(() => {
+                document.querySelectorAll('.active-tab-item').forEach((t, i) => {
+                    t.classList.toggle('current', i === index);
+                    // Mostra X solo sulla tab corrente
+                    const closeBtn = t.querySelector('.close-tab-x');
+                    if (closeBtn) {
+                        closeBtn.style.display = i === index ? 'inline-flex' : 'none';
+                    }
+                });
+            }, 100);
         };
 
         tabElement.innerHTML = `
@@ -1689,7 +1844,7 @@ function showMultitabDetails() {
                 </div>
                 <div class="multitab-tab-text">
                     <div class="multitab-tab-title">${tab.title}</div>
-                    <div class="multitab-tab-url">${tab.url}</div>
+                    <div class="multitab-tab-url">${tab.url || ''}</div>
                 </div>
             </div>
         `;
