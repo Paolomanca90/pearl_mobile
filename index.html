@@ -12,7 +12,10 @@
 <body>
     <!-- Header -->
     <div class="header" id="header">
-        <input type="text" class="address-bar" id="addressBar" placeholder="Search or type URL">
+        <div class="address-bar-container">
+            <span class="material-icons search-icon">search</span>
+            <input type="text" class="address-bar" id="addressBar" placeholder="Search or type URL">
+        </div>
         
         <!-- Wallet Dropdown -->
         <div class="wallet-dropdown" id="walletDropdown">
@@ -490,7 +493,7 @@
         <div class="nav-item" id="searchNav" onclick="showManageProfiles()">
             <div class="profile-avatar" style="width: 35px; height: 35px; cursor: pointer; background: gray;">
                 <div class="avatar-icon">
-                    <span class="material-icons">star</span>
+                    <span class="material-icons">person</span>
                 </div>
             </div>
         </div>

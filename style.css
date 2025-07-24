@@ -45,26 +45,48 @@ z-index: 100;
 background: rgba(66, 66, 66, 0.95);
 }
 
+.address-bar-container {
+    flex: 1;
+    position: relative;
+    margin-right: 12px;
+}
+
+.address-bar-container .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 20px;
+    pointer-events: none;
+    z-index: 1;
+}
+
 .address-bar {
-flex: 1;
-background: var(--md-sys-color-surface-variant);
-border: 1px solid var(--md-sys-color-outline);
-border-radius: 24px;
-padding: 12px 16px;
-color: white;
-font-size: 16px;
-outline: none;
-width: 100%;
-margin-right: 12px;
+    flex: 1;
+    background: var(--md-sys-color-surface-variant);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 24px;
+    padding: 12px 16px 12px 48px; /* Aumentato padding-left per fare spazio all'icona */
+    color: white;
+    font-size: 16px;
+    outline: none;
+    width: 100%;
+    margin-right: 0; /* Rimosso margin-right perché ora è nel container */
 }
 
 .address-bar::placeholder {
-color: rgba(255, 255, 255, 0.6);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .address-bar:focus {
-background: rgba(255, 255, 255, 0.15);
-border-color: var(--md-sys-color-primary);
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--md-sys-color-primary);
+}
+
+.address-bar:focus + .search-icon,
+.address-bar-container:hover .search-icon {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* Wallet Dropdown */

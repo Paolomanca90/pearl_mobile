@@ -93,7 +93,7 @@ function createFakeTab(type, title, data = {}) {
   );
   if (existingTab) {
     switchToFakeTab(existingTab.id);
-    return;
+    return existingTab;
   }
 
   const fakeTab = {
@@ -101,11 +101,45 @@ function createFakeTab(type, title, data = {}) {
     type: type,
     title: title,
     data: data,
+    favicon: getFakeTabIcon(type),
   };
 
   fakeTabs.push(fakeTab);
+  
+  // Genera URL specifico per i wallet
+  let tabUrl = `pearl://${type}`;
+  if (type === 'wallet') {
+    const walletName = title.toLowerCase().replace(/\s+/g, '-');
+    tabUrl = `pearl://wallet-${walletName}`;
+  }
+  
+  // Aggiungi anche alle tabs normali per il pannello
+  const normalTab = {
+    id: nextTabId++,
+    title: title,
+    url: tabUrl,
+    favicon: getFakeTabIcon(type),
+    isIncognito: false,
+    isFakeTab: true,
+    fakeTabId: fakeTab.id
+  };
+  tabs.push(normalTab);
+  
   createFakeTabElement(fakeTab);
   switchToFakeTab(fakeTab.id);
+  renderTabs();
+  updateTabCount();
+  
+  return fakeTab;
+}
+
+function getFakeTabIcon(type) {
+  const icons = {
+    'wallet': 'wallet',
+    'dapps': '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M120-120v-200h160l160-160v-128q-36-13-58-43.5T360-720q0-50 35-85t85-35q50 0 85 35t35 85q0 38-22 68.5T520-608v128l160 160h160v200H640v-122L480-402 320-242v122H120Z"/></svg>',
+    'ai': '<svg xmlns="http://www.w3.org/2000/svg" height="20px" viewBox="0 -960 960 960" width="20px" fill="currentColor"><path d="M480-40q-50 0-85-35t-35-85q0-14 2.5-26.5T371-211L211-372q-12 5-25 8.5t-27 3.5q-50 0-84.5-35T40-480q0-50 34.5-85t84.5-35q39 0 70 22.5t43 57.5h95q9-26 28-44.5t45-27.5v-95q-35-12-57.5-43T360-800q0-50 35-85t85-35q50 0 85 35t35 85q0 14-3 27t-9 25l160 160q12-6 25-9t27-3q50 0 85 35t35 85q0 50-35 85t-85 35q-39 0-70-22.5T687-440h-95q-9 26-27.5 45T520-367v94q35 12 57.5 43t22.5 70q0 50-35 85t-85 35Z"/></svg>'
+  };
+  return icons[type] || 'tab';
 }
 
 function createFakeTabElement(fakeTab) {
@@ -556,16 +590,107 @@ function closeFakeTab(tabId) {
 
 // Tab creation functions
 function openWalletTab(walletName) {
-  createFakeTab("wallet", walletName);
+  const fakeTab = createFakeTab("wallet", walletName);
+  
+  // Se c'è un multitab attivo, aggiungi anche lì
+  if (activeMultitab && fakeTab) {
+    // Genera URL corretto per il wallet
+    const walletUrl = `pearl://wallet-${walletName.toLowerCase().replace(/\s+/g, '-')}`;
+    
+    const newTab = {
+      title: walletName,
+      url: walletUrl,
+      icon: "wallet",
+      isFakeTab: true,
+      fakeTabType: "wallet",
+      fakeTabTitle: walletName,
+      fakeTabId: fakeTab.id
+    };
+    
+    activeMultitabTabs.push(newTab);
+    multitabData[activeMultitab].tabs.push(newTab);
+    showActiveMultitabBar();
+    updateMultitabGroupsDisplay(activeMultitab);
+    
+    // Imposta questa tab come corrente
+    setTimeout(() => {
+      document.querySelectorAll('.active-tab-item').forEach((t, i) => {
+        t.classList.toggle('current', i === activeMultitabTabs.length - 1);
+        const closeBtn = t.querySelector('.close-tab-x');
+        if (closeBtn) {
+          closeBtn.style.display = i === activeMultitabTabs.length - 1 ? 'inline-flex' : 'none';
+        }
+      });
+    }, 100);
+  }
+  
   toggleWalletDropdown();
 }
 
 function openDappsTab() {
-  createFakeTab("dapps", "Dapps Menu");
+  const fakeTab = createFakeTab("dapps", "Dapps Menu");
+  
+  // Se c'è un multitab attivo, aggiungi anche lì
+  if (activeMultitab && fakeTab) {
+    const newTab = {
+      title: "Dapps Menu",
+      url: "pearl://dapps",
+      icon: "hub",
+      isFakeTab: true,
+      fakeTabType: "dapps",
+      fakeTabTitle: "Dapps Menu",
+      fakeTabId: fakeTab.id
+    };
+    
+    activeMultitabTabs.push(newTab);
+    multitabData[activeMultitab].tabs.push(newTab);
+    showActiveMultitabBar();
+    updateMultitabGroupsDisplay(activeMultitab);
+    
+    // Imposta questa tab come corrente
+    setTimeout(() => {
+      document.querySelectorAll('.active-tab-item').forEach((t, i) => {
+        t.classList.toggle('current', i === activeMultitabTabs.length - 1);
+        const closeBtn = t.querySelector('.close-tab-x');
+        if (closeBtn) {
+          closeBtn.style.display = i === activeMultitabTabs.length - 1 ? 'inline-flex' : 'none';
+        }
+      });
+    }, 100);
+  }
 }
 
 function openAiTab() {
-  createFakeTab("ai", "AI Menu");
+  const fakeTab = createFakeTab("ai", "AI Menu");
+  
+  // Se c'è un multitab attivo, aggiungi anche lì
+  if (activeMultitab && fakeTab) {
+    const newTab = {
+      title: "AI Menu",
+      url: "pearl://ai",
+      icon: "psychology",
+      isFakeTab: true,
+      fakeTabType: "ai", 
+      fakeTabTitle: "AI Menu",
+      fakeTabId: fakeTab.id
+    };
+    
+    activeMultitabTabs.push(newTab);
+    multitabData[activeMultitab].tabs.push(newTab);
+    showActiveMultitabBar();
+    updateMultitabGroupsDisplay(activeMultitab);
+    
+    // Imposta questa tab come corrente
+    setTimeout(() => {
+      document.querySelectorAll('.active-tab-item').forEach((t, i) => {
+        t.classList.toggle('current', i === activeMultitabTabs.length - 1);
+        const closeBtn = t.querySelector('.close-tab-x');
+        if (closeBtn) {
+          closeBtn.style.display = i === activeMultitabTabs.length - 1 ? 'inline-flex' : 'none';
+        }
+      });
+    }, 100);
+  }
 }
 
 // Navigation functions
@@ -761,35 +886,48 @@ function renderTabs() {
   tabs.forEach((tab) => {
     const tabItem = document.createElement("div");
     tabItem.className = `single-tab-item ${tab.isIncognito ? "incognito" : ""}`;
-    tabItem.onclick = () => navigateToSite("https://" + tab.url);
+    
+    // Gestisci il click diversamente per fake tabs
+    if (tab.isFakeTab) {
+      tabItem.onclick = () => {
+        switchToFakeTab(tab.fakeTabId);
+        closeTabs(); // Chiudi il pannello delle tab
+      };
+    } else {
+      tabItem.onclick = () => navigateToSite("https://" + tab.url);
+    }
+
+    // Scegli il gradiente giusto per il tipo di tab
+    let previewGradient = "linear-gradient(135deg, #4ade80, #22d3ee)";
+    if (tab.isFakeTab) {
+      if (tab.title.includes("wallet")) {
+        previewGradient = "linear-gradient(135deg, #8b5cf6, #7c3aed)";
+      } else if (tab.title.includes("Dapps")) {
+        previewGradient = "linear-gradient(135deg, #f59e0b, #f97316)";
+      } else if (tab.title.includes("AI")) {
+        previewGradient = "linear-gradient(135deg, #10b981, #059669)";
+      }
+    }
 
     tabItem.innerHTML = `
-                    <div class="tab-preview ${
-                      tab.isIncognito ? "incognito" : ""
-                    }">
-                        <div class="tab-website-icon">
-                            <span class="material-icons" style="font-size: 12px;">${
-                              tab.favicon
-                            }</span>
-                        </div>
-                        <div class="tab-close-btn" onclick="event.stopPropagation(); closeTab(${
-                          tab.id
-                        })">
-                            <span class="material-icons" style="font-size: 16px;">close</span>
-                        </div>
-                    </div>
-                    <div class="tab-info-bar">
-                        <div class="tab-favicon-small">
-                            <span class="material-icons" style="font-size: 8px;">${
-                              tab.favicon
-                            }</span>
-                        </div>
-                        <div class="tab-info-text">
-                            <div class="tab-title-small">${tab.title}</div>
-                            <div class="tab-url-small">${tab.url}</div>
-                        </div>
-                    </div>
-                `;
+      <div class="tab-preview ${tab.isIncognito ? "incognito" : ""}" style="background: ${previewGradient};">
+        <div class="tab-website-icon">
+          ${tab.favicon.includes('<svg') ? tab.favicon : `<span class="material-icons" style="font-size: 12px;">${tab.favicon}</span>`}
+        </div>
+        <div class="tab-close-btn" onclick="event.stopPropagation(); ${tab.isFakeTab ? `closeFakeTab(${tab.fakeTabId})` : `closeTab(${tab.id})`}">
+          <span class="material-icons" style="font-size: 16px;">close</span>
+        </div>
+      </div>
+      <div class="tab-info-bar">
+        <div class="tab-favicon-small">
+          ${tab.favicon.includes('<svg') ? tab.favicon : `<span class="material-icons" style="font-size: 8px;">${tab.favicon}</span>`}
+        </div>
+        <div class="tab-info-text">
+          <div class="tab-title-small">${tab.title}</div>
+          <div class="tab-url-small">${tab.url}</div>
+        </div>
+      </div>
+    `;
 
     singleTabsGrid.appendChild(tabItem);
   });
@@ -835,22 +973,34 @@ function addNewIncognitoTab() {
   closeMenu();
 }
 
-function closeTab(tabId) {
-  const tabIndex = tabs.findIndex((tab) => tab.id === tabId);
-  if (tabIndex > -1) {
-    tabs.splice(tabIndex, 1);
-
-    if (currentTabId === tabId) {
-      if (tabs.length > 0) {
-        currentTabId = tabs[Math.max(0, tabIndex - 1)].id;
-        showHome();
-      } else {
-        addNewTab();
+function closeFakeTab(tabId) {
+  const tabElement = document.getElementById(`fake-tab-${tabId}`);
+  if (tabElement) {
+    tabElement.classList.add("closing");
+    setTimeout(() => {
+      tabElement.remove();
+      
+      // Rimuovi dalle fake tabs
+      fakeTabs = fakeTabs.filter((tab) => tab.id !== tabId);
+      
+      // Rimuovi anche dalle tabs normali
+      const tabIndex = tabs.findIndex(tab => tab.isFakeTab && tab.fakeTabId === tabId);
+      if (tabIndex > -1) {
+        tabs.splice(tabIndex, 1);
+        renderTabs();
+        updateTabCount();
       }
-    }
 
-    renderTabs();
-    updateTabCount();
+      // Se questa era la fake tab attiva, torna alla home
+      if (currentView === "fake-tab") {
+        const url = document.getElementById("addressBar").value;
+        if (url !== "") {
+          showBrowser(url);
+        } else {
+          showHome();
+        }
+      }
+    }, 300);
   }
 }
 
@@ -1478,10 +1628,10 @@ function selectMultitab(multitabId) {
         selectedItem.classList.add('selected');
         currentSelectedMultitab = multitabId;
         
-        // Se questo multitab è già attivo, mostra la barra
-        if (activeMultitab === multitabId) {
-            showActiveMultitabBar();
-        }
+        // Apri direttamente il modale invece di solo selezionare
+        activeMultitab = multitabId;
+        activeMultitabTabs = [...multitabData[multitabId].tabs];
+        showMultitabDetails();
     }
 }
 
@@ -1537,7 +1687,7 @@ function showActiveMultitabBar() {
         if (index === 0) tabElement.classList.add('current');
         
         tabElement.innerHTML = `
-            <i class="material-icons">${tab.icon}</i>
+            ${tab.icon.includes('<svg') ? tab.icon : `<i class="material-icons">${tab.icon}</i>`}
             <span class="close-tab-x" onclick="event.stopPropagation(); removeTabFromMultitab(${index})" style="display: ${index === 0 ? 'inline-flex' : 'none'};">×</span>
         `;
         
@@ -1551,7 +1701,17 @@ function showActiveMultitabBar() {
             const closeBtn = tabElement.querySelector('.close-tab-x');
             closeBtn.style.display = 'inline-flex';
             
-            if (tab.url) {
+            // Gestisci fake tabs vs tab normali
+            if (tab.isFakeTab) {
+                // Per fake tabs, cerca la corrispondente fake tab e attivala
+                const fakeTab = fakeTabs.find(ft => ft.type === tab.fakeTabType && ft.title === tab.fakeTabTitle);
+                if (fakeTab) {
+                    switchToFakeTab(fakeTab.id);
+                } else {
+                    // Se non esiste, creala
+                    createFakeTab(tab.fakeTabType, tab.fakeTabTitle);
+                }
+            } else if (tab.url) {
                 navigateToSite("https://" + tab.url);
             } else {
                 navigateToHomeWithMultitab();
@@ -1608,8 +1768,8 @@ function updateMultitabGroupsDisplay(multitabId = activeMultitab) {
         if (iconsContainer) {
             iconsContainer.innerHTML = '';
             
-            // Mostra tutte le tab (max 3-4 icone)
-            const tabsToShow = multitabData[multitabId].tabs.slice(0, 4);
+            // Mostra prime 3 tab
+            const tabsToShow = multitabData[multitabId].tabs.slice(0, 3);
             tabsToShow.forEach((tab, index) => {
                 const iconDiv = document.createElement('div');
                 iconDiv.className = 'multitab-icon';
@@ -1618,16 +1778,19 @@ function updateMultitabGroupsDisplay(multitabId = activeMultitab) {
                 const colors = ['#1a73e8', '#ea4335', '#34a853', '#fbbc04'];
                 iconDiv.style.background = colors[index] || '#666';
                 
-                iconDiv.innerHTML = `<span class="material-icons">${tab.icon}</span>`;
+                iconDiv.innerHTML = tab.icon.includes('<svg') ? tab.icon : `<span class="material-icons">${tab.icon}</span>`;
                 iconsContainer.appendChild(iconDiv);
             });
             
-            // Se ci sono più di 4 tab, aggiungi un indicatore "+"
-            if (multitabData[multitabId].tabs.length > 4) {
+            // Se ci sono più di 3 tab, mostra +N
+            const remainingTabs = multitabData[multitabId].tabs.length - 3;
+            if (remainingTabs > 0) {
                 const moreIcon = document.createElement('div');
                 moreIcon.className = 'multitab-icon';
                 moreIcon.style.background = '#9e9e9e';
-                moreIcon.innerHTML = `<span class="material-icons">more_horiz</span>`;
+                moreIcon.style.fontSize = '10px';
+                moreIcon.style.fontWeight = 'bold';
+                moreIcon.innerHTML = `+${remainingTabs}`;
                 iconsContainer.appendChild(moreIcon);
             }
         }
@@ -1814,8 +1977,20 @@ function showMultitabDetails() {
                 showActiveMultitabBar();
             }
             
-            // Naviga al sito
-            if (tab.url) {
+            // Gestisci fake tabs vs tab normali
+            if (tab.isFakeTab) {
+                // Per fake tabs, usa l'ID esistente o crea la fake tab
+                if (tab.fakeTabId) {
+                    const existingFakeTab = fakeTabs.find(ft => ft.id === tab.fakeTabId);
+                    if (existingFakeTab) {
+                        switchToFakeTab(existingFakeTab.id);
+                    } else {
+                        createFakeTab(tab.fakeTabType, tab.fakeTabTitle);
+                    }
+                } else {
+                    createFakeTab(tab.fakeTabType, tab.fakeTabTitle);
+                }
+            } else if (tab.url) {
                 navigateToSite("https://" + tab.url);
             } else {
                 navigateToHomeWithMultitab();
@@ -1834,13 +2009,25 @@ function showMultitabDetails() {
             }, 100);
         };
 
+        // Scegli il gradiente corretto per le fake tabs
+        let previewGradient = "linear-gradient(135deg, #4ade80, #22d3ee)";
+        if (tab.isFakeTab) {
+            if (tab.fakeTabType === "wallet") {
+                previewGradient = "linear-gradient(135deg, #8b5cf6, #7c3aed)";
+            } else if (tab.fakeTabType === "dapps") {
+                previewGradient = "linear-gradient(135deg, #f59e0b, #f97316)";
+            } else if (tab.fakeTabType === "ai") {
+                previewGradient = "linear-gradient(135deg, #10b981, #059669)";
+            }
+        }
+
         tabElement.innerHTML = `
-            <div class="multitab-tab-preview">
-                <span class="material-icons">${tab.icon}</span>
+            <div class="multitab-tab-preview" style="background: ${previewGradient};">
+                ${tab.icon.includes('<svg') ? tab.icon : `<span class="material-icons">${tab.icon}</span>`}
             </div>
             <div class="multitab-tab-info">
                 <div class="multitab-tab-favicon">
-                    <span class="material-icons" style="font-size: 8px;">${tab.icon}</span>
+                    ${tab.icon.includes('<svg') ? tab.icon : `<span class="material-icons" style="font-size: 8px;">${tab.icon}</span>`}
                 </div>
                 <div class="multitab-tab-text">
                     <div class="multitab-tab-title">${tab.title}</div>
@@ -1854,7 +2041,6 @@ function showMultitabDetails() {
 
     modal.classList.add("open");
 }
-
 function closeMultitabDetails() {
   document.getElementById("multitabDetailsModal").classList.remove("open");
 }
